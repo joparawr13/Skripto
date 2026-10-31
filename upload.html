@@ -1,0 +1,182 @@
+
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pošalji skriptu | Skripto</title>
+    <link rel="stylesheet" href="css/stil.css">
+</head>
+<body>
+
+    <header>
+        <nav class="navigacija">
+            <a href="index.html" class="logo">Skripto<span>.</span></a>
+
+            <ul>
+                <li><a href="index.html">Početna</a></li>
+                <li><a href="skripte.html">Skripte</a></li>
+                <li><a href="o-nama.html">O nama</a></li>
+                <li><a href="upload.html">Pošalji skriptu</a></li>
+                <li><a href="kontakt.html">Kontakt</a></li>
+                <li><a href="profil.html">Moj profil</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="upload_naslov">
+        <h1>Pošalji svoju skriptu</h1>
+        <p>Podijeli materijale s drugim studentima.</p>
+
+        <form id="uploadObrazac" class="upload_obrazac">
+
+            <label for="naslov">Naziv skripte:</label>
+            <input type="text" id="naslov" required>
+
+            <label for="kolegij">Kolegij:</label>
+            <input type="text" id="kolegij" required>
+
+            <label for="opis">Kratki opis:</label>
+            <textarea id="opis" rows="4"></textarea>
+
+            <label for="datoteka">PDF datoteka:</label>
+            <input type="file" id="datoteka" accept=".pdf,application/pdf" required>
+
+            <button type="submit">Pošalji skriptu</button>
+            <p id="poruka" aria-live="polite"></p>
+
+        </form>
+    </main>
+
+    <footer>
+        <h2>Skripto<span>.</span></h2>
+        <p>Sve skripte na jednom mjestu.</p>
+        <p>© 2026 JR-RIS Projekt.</p>
+    </footer>
+
+    <script type="module">
+    import { createClient } from
+    'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+    const SUPABASE_URL = "https://ebcmpselssykwnnitqrj.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViY21wc2Vsc3N5a3dubml0cXJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM0NzA1ODAsImV4cCI6MjEwOTA0NjU4MH0.T8mRezFMw8eOajO5l8L6-6129b4Lt5Y66ZHRy0i_pzI";
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // Provjera prijavljenog korisnika
+    const { data: { user }, error: authError } =
+        await supabase.auth.getUser();
+
+    if (authError || !user) {
+        alert("Za slanje skripti moraš se prijaviti.");
+        window.location.href = "prijava.html";
+    } else {
+
+        // Dohvaćanje usernamea iz profila
+        const { data: profil, error: profilError } = await supabase
+            .from("profili")
+            .select("username")
+            .eq("id", user.id)
+            .single();
+
+        if (profilError || !profil?.username) {
+            alert("Nemaš postavljeno korisničko ime. Provjeri svoj profil.");
+            window.location.href = "profil.html";
+        } else {
+
+            const obrazac = document.getElementById("uploadObrazac");
+            const poruka = document.getElementById("poruka");
+            const gumb = obrazac.querySelector("button");
+
+            obrazac.addEventListener("submit", async (e) => {
+                e.preventDefault();
+
+                const naslov = document.getElementById("naslov").value.trim();
+                const kolegij = document.getElementById("kolegij").value.trim();
+                const opis = document.getElementById("opis").value.trim();
+                const datoteka = document.getElementById("datoteka").files[0];
+
+                if (!naslov || !kolegij) {
+                    poruka.textContent = "Ispuni sva obavezna polja.";
+                    return;
+                }
+
+                if (!datoteka || datoteka.type !== "application/pdf" ||
+                    !datoteka.name.toLowerCase().endsWith(".pdf")) {
+                    poruka.textContent = "Možeš poslati samo PDF datoteku.";
+                    return;
+                }
+
+                if (datoteka.size > 10 * 1024 * 1024) {
+                    poruka.textContent = "Datoteka ne smije biti veća od 10 MB.";
+                    return;
+                }
+
+                poruka.textContent = "Slanje je u tijeku...";
+                gumb.disabled = true;
+
+                const putanja = crypto.randomUUID() + ".pdf";
+
+                try {
+                    // Slanje PDF datoteke u Storage
+                    const { error: uploadError } = await supabase.storage
+                        .from("skripte")
+                        .upload(putanja, datoteka, {
+                            contentType: "application/pdf",
+                            upsert: false
+                        });
+
+                    if (uploadError) throw uploadError;
+
+                    // Spremanje podataka o skripti u bazu
+                    const { error: unosError } = await supabase
+                        .from("skripte")
+                        .insert([{
+                            naslov: naslov,
+                            kolegij: kolegij,
+                            autor: profil.username,
+                            opis: opis,
+                            naziv_datoteke: datoteka.name,
+                            putanja_datoteke: putanja,
+                            status: "pending",
+                            korisnik_id: user.id
+                        }]);
+
+                    if (unosError) {
+                        // Brisanje PDF-a ako spremanje u bazu ne uspije
+                        await supabase.storage
+                            .from("skripte")
+                            .remove([putanja]);
+
+                        throw unosError;
+                    }
+
+                    poruka.textContent =
+                        "Skripta je uspješno poslana i čeka odobrenje administratora. Sljedeću možeš poslati za 5 minuta.";
+
+                    obrazac.reset();
+
+                } catch (error) {
+                    console.error("Greška prilikom slanja:", error);
+
+                    if (
+                        error.message.includes("5 minutes") ||
+                        error.message.includes("svakih 5 minuta")
+                    ) {
+                        poruka.textContent =
+                            "Već si poslao skriptu. Pričekaj 5 minuta prije slanja nove.";
+                    } else {
+                        poruka.textContent =
+                            "Greška prilikom slanja. " + error.message;
+                    }
+
+                } finally {
+                    gumb.disabled = false;
+                }
+            });
+        }
+    }
+    </script>
+
+</body>
+</html>

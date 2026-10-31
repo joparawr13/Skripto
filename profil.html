@@ -1,0 +1,190 @@
+
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moj profil | Skripto</title>
+    <link rel="stylesheet" href="css/stil.css">
+</head>
+<body>
+
+    <header>
+        <nav class="navigacija">
+
+            <a href="index.html" class="logo">Skripto<span>.</span></a>
+
+            <ul>
+                <li><a href="index.html">Početna</a></li>
+                <li><a href="skripte.html">Skripte</a></li>
+                <li><a href="o-nama.html">O nama</a></li>
+                <li><a href="upload.html">Pošalji skriptu</a></li>
+                <li><a href="kontakt.html">Kontakt</a></li>
+                <a href="profil.html">Moj profil</a>
+            </ul>
+
+        </nav>
+    </header>
+
+<main class="auth-container">
+    <h1>Moj profil</h1>
+    <p class="auth-opis">Dobrodošao na svoj Skripto profil!</p>
+
+    <div id="podaciProfila">
+        Učitavanje podataka...
+    </div>
+
+    <h2>Moje objavljene skripte</h2>
+    <div id="mojeSkripte">
+        Učitavanje skripti...
+    </div>
+
+    <div id="admin-gumb" style="display: none;">
+        <a href="admin.html" class="gumb-admin">Admin panel</a>
+    </div>
+
+    <button id="odjava">Odjavi se</button>
+    <p id="poruka"></p>
+</main>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const SUPABASE_URL = "https://ebcmpselssykwnnitqrj.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViY21wc2Vsc3N5a3dubml0cXJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM0NzA1ODAsImV4cCI6MjEwOTA0NjU4MH0.T8mRezFMw8eOajO5l8L6-6129b4Lt5Y66ZHRy0i_pzI";
+
+
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const podaciProfila = document.getElementById("podaciProfila");
+const mojeSkripte = document.getElementById("mojeSkripte");
+const poruka = document.getElementById("poruka");
+
+async function ucitajProfil() {
+    const { data: { user }, error: korisnikError } =
+        await supabase.auth.getUser();
+
+    if (korisnikError || !user) {
+        window.location.href = "prijava.html";
+        return;
+    }
+
+    // Provjera je li korisnik administrator
+    const { data: admin, error: adminError } = await supabase
+        .from("admini")
+        .select("user_id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+    if (!adminError && admin) {
+        const adminGumb = document.getElementById("admin-gumb");
+
+        if (adminGumb) {
+            adminGumb.style.display = "block";
+        }
+    }
+
+    // Dohvaćanje profila
+    let { data: profil, error } = await supabase
+        .from("profili")
+        .select("*")
+        .eq("id", user.id)
+        .maybeSingle();
+
+    if (error) {
+        console.error("Greška pri dohvaćanju profila:", error);
+        podaciProfila.textContent = "Greška pri učitavanju profila.";
+        return;
+    }
+
+    // Ako profil ne postoji, pokušaj ga napraviti
+    if (!profil) {
+        const noviProfil = {
+            id: user.id,
+            ime: user.user_metadata?.ime || "",
+            prezime: user.user_metadata?.prezime || "",
+            username: user.user_metadata?.username || "",
+            email: user.email
+        };
+
+        const { data: spremljeniProfil, error: spremanjeError } =
+            await supabase
+                .from("profili")
+                .upsert(noviProfil)
+                .select()
+                .single();
+
+        if (spremanjeError) {
+            console.error("Greška pri stvaranju profila:", spremanjeError);
+            podaciProfila.textContent =
+                "Profil nije pronađen i nije ga moguće automatski izraditi.";
+            return;
+        }
+
+        profil = spremljeniProfil;
+    }
+
+    // Prikaz podataka profila
+    podaciProfila.innerHTML = `
+        <p><strong>Korisničko ime:</strong> ${siguranTekst(profil.username)}</p>
+        <p><strong>Ime:</strong> ${siguranTekst(profil.ime)}</p>
+        <p><strong>Prezime:</strong> ${siguranTekst(profil.prezime)}</p>
+        <p><strong>E-mail:</strong> ${siguranTekst(profil.email)}</p>
+    `;
+
+    // Dohvaćanje svih skripti prijavljenog korisnika
+    const { data: skripte, error: skripteError } = await supabase
+        .from("skripte")
+        .select("*")
+        .eq("korisnik_id", user.id)
+        .order("datum_objave", { ascending: false });
+
+    if (skripteError) {
+        mojeSkripte.textContent = "Greška pri učitavanju skripti.";
+        console.error("Greška pri dohvaćanju skripti:", skripteError);
+        return;
+    }
+
+    if (!skripte || skripte.length === 0) {
+        mojeSkripte.textContent = "Još nisi poslao nijednu skriptu.";
+        return;
+    }
+
+    // Prikaz skripti i statusa
+    mojeSkripte.innerHTML = skripte.map(s => `
+        <div class="kartica_skripte">
+            <h3>${siguranTekst(s.naslov)}</h3>
+            <p>${siguranTekst(s.kolegij)}</p>
+            <p>Status: ${siguranTekst(s.status)}</p>
+        </div>
+    `).join("");
+}
+
+// Siguran prikaz teksta
+function siguranTekst(vrijednost) {
+    const element = document.createElement("span");
+    element.textContent = vrijednost ?? "";
+    return element.innerHTML;
+}
+
+// Odjava korisnika
+document.getElementById("odjava").addEventListener("click", async () => {
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+        poruka.textContent = "Greška prilikom odjave.";
+        return;
+    }
+
+    window.location.href = "prijava.html";
+});
+
+// Pokretanje učitavanja profila
+ucitajProfil();
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,136 @@
+
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prijava | Skripto</title>
+    <link rel="stylesheet" href="css/stil.css">
+</head>
+
+<body>
+
+    <header>
+        <nav class="navigacija">
+
+            <a href="index.html" class="logo">Skripto<span>.</span></a>
+
+            <ul>
+                <li><a href="index.html">Početna</a></li>
+                <li><a href="skripte.html">Skripte</a></li>
+                <li><a href="o-nama.html">O nama</a></li>
+                <li><a href="upload.html">Pošalji skriptu</a></li>
+                <li><a href="kontakt.html">Kontakt</a></li>
+                <a href="profil.html">Moj profil</a>
+            </ul>
+
+        </nav>
+    </header>
+
+<main>
+    <div class="auth-container">
+
+        <h1>Prijava</h1>
+
+        <p class="auth-opis">
+            Prijavi se na svoj Skripto račun.
+        </p>
+
+        <form class="auth-form" id="prijavaForma">
+
+            <label for="email">E-mail adresa</label>
+            <input
+                type="email"
+                id="email"
+                placeholder="Unesi e-mail"
+                required
+            >
+
+            <label for="lozinka">Lozinka</label>
+            <input
+                type="password"
+                id="lozinka"
+                placeholder="Unesi lozinku"
+                required
+            >
+
+            <button type="submit" id="prijavaGumb">
+                Prijavi se
+            </button>
+
+        </form>
+
+        <p id="poruka"></p>
+
+        <p class="auth-poruka">
+            Nemaš račun?
+            <a href="registracija.html">Registriraj se</a>
+        </p>
+
+    </div>
+</main>
+
+<script type="module">
+
+import { createClient } from
+'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const SUPABASE_URL = "https://ebcmpselssykwnnitqrj.supabase.co";
+
+// Koristi isti publishable/anon ključ kao u registracija.html.
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViY21wc2Vsc3N5a3dubml0cXJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM0NzA1ODAsImV4cCI6MjEwOTA0NjU4MH0.T8mRezFMw8eOajO5l8L6-6129b4Lt5Y66ZHRy0i_pzI";
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const forma = document.getElementById("prijavaForma");
+const poruka = document.getElementById("poruka");
+const gumb = document.getElementById("prijavaGumb");
+
+forma.addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+    const lozinka = document.getElementById("lozinka").value;
+
+    poruka.textContent = "";
+
+    gumb.disabled = true;
+    gumb.textContent = "Prijava u tijeku...";
+
+    try {
+
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: lozinka
+        });
+
+        if (error) {
+            throw error;
+        }
+
+        if (!data.session) {
+            throw new Error("Prijava nije uspjela.");
+        }
+
+        poruka.textContent = "Uspješna prijava! Preusmjeravanje...";
+
+        window.location.href = "index.html";
+
+    } catch (error) {
+
+        poruka.textContent = "Greška: " + error.message;
+
+    } finally {
+
+        gumb.disabled = false;
+        gumb.textContent = "Prijavi se";
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>

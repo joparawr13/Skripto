@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="hr">
 
@@ -10,8 +11,9 @@
     <link rel="stylesheet" href="css/stil.css">
 </head>
 
-    <!-- pocetak -->
 <body>
+
+    <!-- NAVIGACIJA -->
     <header>
         <nav class="navigacija">
 
@@ -21,42 +23,58 @@
                 <li><a href="index.html">Početna</a></li>
                 <li><a href="skripte.html">Skripte</a></li>
                 <li><a href="o-nama.html">O nama</a></li>
+                <li><a href="upload.html">Pošalji skriptu</a></li>
                 <li><a href="kontakt.html">Kontakt</a></li>
+                <li><a href="profil.html">Moj profil</a></li>
             </ul>
+
         </nav>
     </header>
 
+
     <main>
-        <section class="naslovna">
+
+        <section class="naslovna_nova">
             <div class="naslovni_tekst">
-
-                <h1>Znanje je bolje kada se dijeli.</h1>
-
+                <h1>Znanje je vrijednije kada se dijeli.</h1>
+        
                 <p>
                     Pronađi skripte, bilješke i materijale za učenje
-                    studenata s različitih fakulteta.
-                    Sve na jednom mjestu.
+                    studenata sa Sveučilišta Algebra Bernays. Podijeli svoje
+                    znanje i olakšaj učenje drugima.
                 </p>
-
-                <a href="skripte.html" class="glavni_gumb">
-                    Pronađi skriptu
-                </a>
+        
+                <a href="skripte.html" class="gumb">Pronađi skriptu</a>
             </div>
-
+        
             <div class="naslovna_slika">
-                <div class="primjer_skripte">
-                    <h3>Vaša skripta</h3>
-                    <p>Na našoj stranici! Dostupna svima!</p>
-                    <p class="oznaka">PDF dokument</p>
-                </div>
+                <img src="naslovna.png" alt="Ilustracija studenata">
             </div>
         </section>
 
 
-        
+        <!-- STATISTIKA -->
+        <section class="statistika">
+
+            <div class="statistika_stavka">
+                <h2 id="broj_korisnika">0</h2>
+                <p>Registriranih korisnika</p>
+            </div>
+
+            <div class="statistika_stavka">
+                <h2 id="broj_skripti">0</h2>
+                <p>Objavljenih skripti</p>
+            </div>
+
+            <div class="statistika_stavka">
+                <h2 id="broj_preuzimanja">0</h2>
+                <p>Ukupnih preuzimanja</p>
+            </div>
+
+        </section>
 
 
-        <!-- nove skripteeeeeeee -->
+        <!-- NAJNOVIJE OBJAVLJENE SKRIPTE -->
         <section class="skripte">
 
             <h2>Najnovije objavljene skripte</h2>
@@ -65,52 +83,18 @@
                 Pogledaj materijale koje su podijelili drugi studenti.
             </p>
 
-            <div class="popis_skripti">
+            <div id="najnovije_skripte" class="popis_skripti">
 
-                <article class="kartica_skripte">
-
-                    <h3>Osnove marketinga</h3>
-
-                    <p>Sažetak najvažnijih pojmova za prvi međuispit.</p>
-
-                    <p class="podaci">Jakov Jakić</p>
-
-                    <a href="skripte.html" class="klik">Pronađi više skripta →</a>
-
-                </article>
-
-
-                <article class="kartica_skripte">
-
-                    <h3>Osnove ekonomije</h3>
-
-                    <p>Bilješke s predavanja i priprema za ispit.</p>
-
-                    <p class="podaci">Ana Anić</p>
-
-                    <a href="skripte.html" class="klik">Pronađi više skripta →</a>
-
-                </article>
-
-
-                <article class="kartica_skripte">
-
-                    <h3>Programiranje 1</h3>
-
-                    <p>Osnovni pojmovi i primjeri zadataka.</p>
-
-                    <p class="podaci">Marko Markić</p>
-
-                    <a href="skripte.html" class="klik">Pronađi više skripta →</a>
-
-                </article>
+                <p id="ucitavanje">
+                    Učitavanje najnovijih skripti...
+                </p>
 
             </div>
 
         </section>
 
 
-        <!-- salji nam svoje -->
+        <!-- POZIV NA SLANJE SKRIPTI -->
         <section class="poziv">
 
             <h2>Imaš vlastite skripte?</h2>
@@ -120,7 +104,7 @@
                 i pomozi im u učenju.
             </p>
 
-            <a href="kontakt.html" class="glavni_gumb">
+            <a href="upload.html" class="glavni_gumb">
                 Saznaj više
             </a>
 
@@ -129,16 +113,168 @@
     </main>
 
 
-    <!-- dole -->
+    <!-- PODNOŽJE -->
     <footer>
 
         <h2>Skripto<span>.</span></h2>
 
         <p>Sve skripte na jednom mjestu.</p>
 
-        <p>© 2026 JR-RIS Projekt. </p>
+        <p>© 2026 JR-RIS Projekt.</p>
 
     </footer>
+
+
+    <!-- SUPABASE -->
+    <script type="module">
+
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+        // SUPABASE POSTAVKE
+
+        const SUPABASE_URL = "https://ebcmpselssykwnnitqrj.supabase.co";
+
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViY21wc2Vsc3N5a3dubml0cXJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM0NzA1ODAsImV4cCI6MjEwOTA0NjU4MH0.T8mRezFMw8eOajO5l8L6-6129b4Lt5Y66ZHRy0i_pzI";
+
+        const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+
+        // DOHVACANJE NAJNOVIJIH SKRIPTI
+
+        async function dohvatiNajnovijeSkripte() {
+
+            const popis = document.getElementById("najnovije_skripte");
+
+            popis.innerHTML = "<p>Učitavanje najnovijih skripti...</p>";
+
+            try {
+
+                const { data, error } = await supabase
+                    .from("skripte")
+                    .select("*")
+                    .eq("status", "approved")
+                    .order("datum_objave", { ascending: false })
+                    .limit(3);
+
+                if (error) {
+                    throw error;
+                }
+
+                // AKO NEMA OBJAVLJENIH SKRIPTI
+
+                if (!data || data.length === 0) {
+
+                    popis.innerHTML = "<p>Trenutno nema objavljenih skripti.</p>";
+
+                    return;
+                }
+
+                // PRAZNJENJE POPISA
+
+                popis.innerHTML = "";
+
+                // PRIKAZ TRI NAJNOVIJE SKRIPTE
+
+                data.forEach(skripta => {
+
+                    const kartica = document.createElement("article");
+
+                    kartica.className = "kartica_skripte";
+
+                    // NASLOV SKRIPTE
+
+                    const naslov = document.createElement("h3");
+
+                    naslov.textContent = skripta.naslov;
+
+                    // OPIS SKRIPTE
+
+                    const opis = document.createElement("p");
+
+                    opis.textContent = skripta.opis || "Nema opisa za ovu skriptu.";
+
+                    // PODACI O SKRIPTI
+
+                    const podaci = document.createElement("p");
+
+                    podaci.className = "podaci";
+
+                    podaci.textContent =
+                        (skripta.kolegij || "Nepoznat kolegij") +
+                        " | " +
+                        (skripta.autor || "Nepoznat autor");
+
+                    // LINK ZA PREGLED SVIH SKRIPTI
+
+                    const poveznica = document.createElement("a");
+
+                    poveznica.href = "skripte.html";
+
+                    poveznica.className = "klik";
+
+                    poveznica.textContent = "Pogledaj sve skripte →";
+
+                    // DODAVANJE ELEMENATA U KARTICU
+
+                    kartica.appendChild(naslov);
+
+                    kartica.appendChild(opis);
+
+                    kartica.appendChild(podaci);
+
+                    kartica.appendChild(poveznica);
+
+                    popis.appendChild(kartica);
+
+                });
+
+            }
+
+            catch (error) {
+
+                console.error("Greška pri dohvaćanju skripti:", error);
+
+                popis.innerHTML =
+                    "<p>Došlo je do greške prilikom učitavanja skripti.</p>";
+
+            }
+
+        }
+
+
+        // DOHVACANJE STATISTIKE
+
+        
+async function dohvatiStatistiku() {
+    const { data, error } = await supabase.rpc("dohvati_javnu_statistiku");
+
+    if (error) {
+        console.error("Greška kod dohvaćanja statistike:", error);
+        return;
+    }
+
+    if (data && data.length > 0) {
+        document.getElementById("broj_korisnika").textContent =
+            data[0].broj_korisnika;
+
+        document.getElementById("broj_skripti").textContent =
+            data[0].broj_skripti;
+
+        document.getElementById("broj_preuzimanja").textContent =
+            data[0].broj_preuzimanja;
+    }
+}
+
+
+
+
+        // POKRETANJE FUNKCIJA
+
+        dohvatiNajnovijeSkripte();
+
+        dohvatiStatistiku();
+
+    </script>
 
 </body>
 

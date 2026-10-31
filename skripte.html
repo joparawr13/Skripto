@@ -1,25 +1,30 @@
-
 <!DOCTYPE html>
 <html lang="hr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Materijali | Skripto</title>
     <link rel="stylesheet" href="css/stil.css">
 </head>
+
 <body>
 
     <!-- Navigacija -->
     <header>
         <nav class="navigacija">
+
             <a href="index.html" class="logo">Skripto<span>.</span></a>
 
             <ul>
                 <li><a href="index.html">Početna</a></li>
                 <li><a href="skripte.html">Skripte</a></li>
                 <li><a href="o-nama.html">O nama</a></li>
+                <li><a href="upload.html">Pošalji skriptu</a></li>
                 <li><a href="kontakt.html">Kontakt</a></li>
+                <a href="profil.html">Moj profil</a>
             </ul>
+
         </nav>
     </header>
 
@@ -32,193 +37,325 @@
         </p>
     </section>
 
-    <!-- Odabir kolegija -->
-    <section class="odabir_sekcija">
-        <h2>Odaberi kolegij</h2>
-        <p>Odaberi kolegij kako bi pronašao dostupne materijale.</p>
+    <!-- Pretraživanje -->
+    <section class="pretraga_sekcija">
+        <h2>Pronađi svoju skriptu</h2>
+        <p>Pretraži materijale prema nazivu, kolegiju ili autoru.</p>
 
-        <details class="dropdown">
-            <summary>Odaberi kolegij</summary>
-
-            <div class="dropdown_sadrzaj">
-                <a href="#ekonomija">Osnove ekonomije</a>
-                <a href="#engleski">Engleski jezik</a>
-                <a href="#imk">Integrirana marketinška komunikacija</a>
-                <a href="#sucelja">Razvoj interakcijskih sučelja</a>
-                <a href="#ravk">RAVK</a>
-                <a href="#oglasavanje">Digitalno oglašavanje</a>
-                <a href="#istrazivanje">Istraživanje tržišta</a>
-            </div>
-        </details>
+        <input type="text" id="pretragaSkripti" placeholder="Upiši naziv skripte ili kolegija...">
     </section>
 
-    <!-- Osnove ekonomije -->
-    <section class="materijali_sekcija" id="ekonomija">
-        <h2>Osnove ekonomije</h2>
-        <p class="opis_sekcije">Materijali za učenje iz kolegija Osnove ekonomije.</p>
+    <!-- Postojeći i novi materijali -->
+    <section class="materijali_sekcija">
 
-        <div class="popis_skripti">
-            <div class="kartica_skripte">
-                <h3>Uvod u ekonomiju</h3>
-                <p>Osnovni ekonomski pojmovi, ponuda, potražnja i tržište.</p>
-                <p class="podaci">Autor: Jakov Jakić</p>
-                <a href="#">Preuzmi skriptu</a>
-            </div>
+        <h2>Dostupni materijali</h2>
+        <p class="opis_sekcije">
+            Ovdje se nalaze odobrene skripte koje su podijelili studenti.
+        </p>
 
-            <div class="kartica_skripte">
-                <h3>BDP i inflacija</h3>
-                <p>Objašnjenje BDP-a, inflacije i ostalih ekonomskih pokazatelja.</p>
-                <p class="podaci">Autor: Ana Anić</p>
-                <a href="#">Preuzmi skriptu</a>
-            </div>
+        <div id="sve_skripte" class="popis_skripti">
+            <p id="ucitavanje">Učitavanje skripti...</p>
         </div>
+
+        <p id="nemaSkripti" style="display:none;">
+            Nema pronađenih skripti.
+        </p>
+
     </section>
 
-    <!-- Engleski jezik -->
-    <section class="materijali_sekcija" id="engleski">
-        <h2>Engleski jezik</h2>
-        <p class="opis_sekcije">Bilješke i materijali za kolegij Engleski jezik.</p>
-
-        <div class="popis_skripti">
-            <div class="kartica_skripte">
-                <h3>Marketing Vocabulary</h3>
-                <p>Najvažniji pojmovi iz područja marketinga na engleskom jeziku.</p>
-                <p class="podaci">Autor: Marko Markić</p>
-                <a href="#">Preuzmi skriptu</a>
-            </div>
-
-            <div class="kartica_skripte">
-                <h3>Business English</h3>
-                <p>Osnovni poslovni izrazi i korisne fraze na engleskom jeziku.</p>
-                <p class="podaci">Autor: Ana Anić</p>
-                <a href="#">Preuzmi skriptu</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Integrirana marketinška komunikacija -->
-    <section class="materijali_sekcija" id="imk">
-        <h2>Integrirana marketinška komunikacija</h2>
-        <p class="opis_sekcije">Materijali vezani uz marketinšku komunikaciju i oglašavanje.</p>
-
-        <div class="popis_skripti">
-            <div class="kartica_skripte">
-                <h3>Osnove marketinške komunikacije</h3>
-                <p>Uvod u komunikacijske kanale, poruke i ciljne skupine.</p>
-                <p class="podaci">Autor: Jakov Jakić</p>
-                <a href="#">Preuzmi skriptu</a>
-            </div>
-
-            <div class="kartica_skripte">
-                <h3>Komunikacijski miks</h3>
-                <p>Pregled elemenata marketinške komunikacije i njihove primjene.</p>
-                <p class="podaci">Autor: Marko Markić</p>
-                <a href="#">Preuzmi skriptu</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Razvoj interakcijskih sučelja -->
-    <section class="materijali_sekcija" id="sucelja">
-        <h2>Razvoj interakcijskih sučelja</h2>
-        <p class="opis_sekcije">Skripte i bilješke za izradu web stranica i sučelja.</p>
-
-        <div class="popis_skripti">
-            <div class="kartica_skripte">
-                <h3>Osnove HTML-a</h3>
-                <p>Osnovna struktura HTML dokumenta, elementi i oznake.</p>
-                <p class="podaci">Autor: Jakov Jakić</p>
-                <a href="#">Preuzmi skriptu</a>
-            </div>
-
-            <div class="kartica_skripte">
-                <h3>CSS stiliziranje</h3>
-                <p>Osnove CSS-a, boje, fontovi, raspored i oblikovanje stranica.</p>
-                <p class="podaci">Autor: Ana Anić</p>
-                <a href="#">Preuzmi skriptu</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- RAVK -->
-    <section class="materijali_sekcija" id="ravk">
-        <h2>RAVK</h2>
-        <p class="opis_sekcije">Materijali i bilješke za kolegij RAVK.</p>
-
-        <div class="popis_skripti">
-            <div class="kartica_skripte">
-                <h3>Osnove kolegija RAVK</h3>
-                <p>Pregled osnovnih pojmova i tema koje se obrađuju na kolegiju.</p>
-                <p class="podaci">Autor: Marko Markić</p>
-                <a href="#">Preuzmi skriptu</a>
-            </div>
-
-            <div class="kartica_skripte">
-                <h3>Bilješke s predavanja</h3>
-                <p>Sažetak važnih informacija i pojmova s predavanja.</p>
-                <p class="podaci">Autor: Jakov Jakić</p>
-                <a href="#">Preuzmi skriptu</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Digitalno oglašavanje -->
-    <section class="materijali_sekcija" id="oglasavanje">
-        <h2>Digitalno oglašavanje</h2>
-        <p class="opis_sekcije">Skripte vezane uz online oglašavanje i digitalne kampanje.</p>
-
-        <div class="popis_skripti">
-            <div class="kartica_skripte">
-                <h3>Google Ads</h3>
-                <p>Osnove Google oglašavanja, kampanje i ključne riječi.</p>
-                <p class="podaci">Autor: Ana Anić</p>
-                <a href="#">Preuzmi skriptu</a>
-            </div>
-
-            <div class="kartica_skripte">
-                <h3>Društvene mreže</h3>
-                <p>Oglašavanje na Instagramu, Facebooku i drugim platformama.</p>
-                <p class="podaci">Autor: Marko Markić</p>
-                <a href="#">Preuzmi skriptu</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Istraživanje tržišta -->
-    <section class="materijali_sekcija" id="istrazivanje">
-        <h2>Istraživanje tržišta</h2>
-        <p class="opis_sekcije">Materijali o istraživanju potrošača i tržišta.</p>
-
-        <div class="popis_skripti">
-            <div class="kartica_skripte">
-                <h3>Metode istraživanja</h3>
-                <p>Pregled osnovnih metoda prikupljanja i analize podataka.</p>
-                <p class="podaci">Autor: Jakov Jakić</p>
-                <a href="#">Preuzmi skriptu</a>
-            </div>
-
-            <div class="kartica_skripte">
-                <h3>Anketno istraživanje</h3>
-                <p>Izrada anketa, postavljanje pitanja i analiza rezultata.</p>
-                <p class="podaci">Autor: Ana Anić</p>
-                <a href="#">Preuzmi skriptu</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- daj nam svojee -->
+    <!-- Poziv -->
     <section class="poziv">
         <h2>Imaš vlastite skripte?</h2>
-        <p>Podijeli svoje materijale s drugim studentima i pomozi im u učenju.</p>
-        <a href="kontakt.html" class="glavni_gumb">Pošalji materijale</a>
+        <p>
+            Podijeli svoje materijale s drugim studentima
+            i pomozi im u učenju.
+        </p>
+        <a href="upload.html" class="gumb">Pošalji svoju skriptu</a>
     </section>
 
-    <!-- dole -->
+    <!-- Footer -->
     <footer>
         <h2>Skripto<span>.</span></h2>
         <p>Sve skripte na jednom mjestu.</p>
         <p>© 2026 JR-RIS Projekt.</p>
     </footer>
 
-</body>
-</html>
+    <!-- Supabase povezivanje -->
+    <script type="module">
+
+import { createClient } from
+    'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+
+// PODACI ZA POVEZIVANJE
+
+const SUPABASE_URL = "https://ebcmpselssykwnnitqrj.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViY21wc2Vsc3N5a3dubml0cXJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM0NzA1ODAsImV4cCI6MjEwOTA0NjU4MH0.T8mRezFMw8eOajO5l8L6-6129b4Lt5Y66ZHRy0i_pzI";
+
+const supabase = createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+
+// HTML ELEMENTI
+
+const spremnik = document.getElementById("sve_skripte");
+const pretraga = document.getElementById("pretragaSkripti");
+const poruka = document.getElementById("nemaSkripti");
+
+let sveSkripte = [];
+
+
+// =========================================
+// UČITAVANJE SKRIPTI IZ BAZE
+// =========================================
+
+async function ucitajSkripte() {
+
+    spremnik.innerHTML = "<p>Učitavanje skripti...</p>";
+
+    const { data, error } = await supabase
+        .from("skripte")
+        .select("*")
+        .eq("status", "approved")
+        .order("datum_objave", { ascending: false });
+
+    if (error) {
+
+        console.error("Greška pri učitavanju:", error);
+
+        spremnik.innerHTML =
+            "<p>Došlo je do greške pri učitavanju skripti.</p>";
+
+        return;
+    }
+
+    sveSkripte = data || [];
+
+    prikaziSkripte(sveSkripte);
+}
+
+
+// =========================================
+// PRIKAZ SKRIPTI NA STRANICI
+// =========================================
+
+function prikaziSkripte(skripte) {
+
+    spremnik.innerHTML = "";
+
+    poruka.style.display = "none";
+
+    if (skripte.length === 0) {
+
+        poruka.textContent = "Trenutno nema skripti za prikaz.";
+
+        poruka.style.display = "block";
+
+        return;
+    }
+
+
+    skripte.forEach((skripta) => {
+
+        // KARTICA
+
+        const kartica = document.createElement("div");
+
+        kartica.className = "kartica_skripte";
+
+
+        // NASLOV
+
+        const naslov = document.createElement("h3");
+
+        naslov.textContent = skripta.naslov;
+
+        kartica.appendChild(naslov);
+
+
+        // KOLEGIJ
+
+        const kolegij = document.createElement("p");
+
+        kolegij.textContent = "Kolegij: " + skripta.kolegij;
+
+        kartica.appendChild(kolegij);
+
+
+        // AUTOR
+
+        const autor = document.createElement("p");
+
+        autor.textContent = "Autor: " + (skripta.autor || "Anonimno");
+
+        kartica.appendChild(autor);
+
+
+        // OPIS
+
+        if (skripta.opis) {
+
+            const opis = document.createElement("p");
+
+            opis.textContent = skripta.opis;
+
+            kartica.appendChild(opis);
+        }
+
+
+        // BROJ PREUZIMANJA
+
+        const brojPreuzimanja = document.createElement("p");
+
+        brojPreuzimanja.className = "broj_preuzimanja";
+
+        brojPreuzimanja.textContent =
+            "Preuzimanja: " + (skripta.broj_preuzimanja ?? 0);
+
+        kartica.appendChild(brojPreuzimanja);
+
+
+        // GUMB ZA PREUZIMANJE
+
+        const gumb = document.createElement("button");
+
+        gumb.textContent = "Preuzmi PDF";
+
+        gumb.className = "gumb";
+
+
+        gumb.addEventListener("click", async () => {
+
+            gumb.textContent = "Preuzimanje...";
+
+            gumb.disabled = true;
+
+            try {
+
+                // POZIV EDGE FUNCTION
+
+                const { data, error } = await supabase.functions.invoke(
+                    "preuzmi-skriptu",
+                    {
+                        body: {
+                            id: skripta.id
+                        }
+                    }
+                );
+
+
+                if (error) {
+                    throw error;
+                }
+
+                if (!data || !data.url) {
+                    throw new Error("PDF nije dostupan.");
+                }
+
+
+                // AŽURIRANJE BROJA PREUZIMANJA
+
+                if (typeof data.broj_preuzimanja === "number") {
+
+                    skripta.broj_preuzimanja = data.broj_preuzimanja;
+
+                    brojPreuzimanja.textContent =
+                        "Preuzimanja: " + data.broj_preuzimanja;
+                }
+
+
+                // OTVARANJE PREUZIMANJA PDF-A
+
+                const poveznica = document.createElement("a");
+
+                poveznica.href = data.url;
+
+                poveznica.download =
+                    skripta.naziv_datoteke || "skripta.pdf";
+
+                document.body.appendChild(poveznica);
+
+                poveznica.click();
+
+                poveznica.remove();
+
+
+            } catch (error) {
+
+                console.error("Greška pri preuzimanju:", error);
+
+                if (error.context) {
+
+                    const detalji = await error.context.clone().text();
+
+                    console.error(
+                        "Odgovor Edge Functiona:",
+                        detalji
+                    );
+
+                    alert("Greška: " + detalji);
+
+                } else {
+
+                    alert("Greška: " + error.message);
+                }
+
+
+            } finally {
+
+                gumb.textContent = "Preuzmi PDF";
+
+                gumb.disabled = false;
+            }
+
+        });
+
+
+        kartica.appendChild(gumb);
+
+
+        // DODAVANJE KARTICE NA STRANICU
+
+        spremnik.appendChild(kartica);
+
+    });
+
+}
+
+
+// =========================================
+// PRETRAŽIVANJE SKRIPTI
+// =========================================
+
+pretraga.addEventListener("input", () => {
+
+    const pojam = pretraga.value.toLowerCase().trim();
+
+    const filtriraneSkripte = sveSkripte.filter((skripta) => {
+
+        return (
+
+            (skripta.naslov || "").toLowerCase().includes(pojam) ||
+
+            (skripta.kolegij || "").toLowerCase().includes(pojam) ||
+
+            (skripta.autor || "").toLowerCase().includes(pojam)
+
+        );
+
+    });
+
+    prikaziSkripte(filtriraneSkripte);
+
+});
+
+
+// =========================================
+// POKRETANJE
+// =========================================
+
+ucitajSkripte();
+
+    </script>
