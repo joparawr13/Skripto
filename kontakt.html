@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="hr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Skripto - Kontakt</title>
+
+    <link rel="stylesheet" href="css/stil.css">
+</head>
+
+<body>
+
+    <!-- pocetak -->
+    <header>
+        <nav class="navigacija">
+
+            <a href="index.html" class="logo">Skripto<span>.</span></a>
+
+            <ul>
+                <li><a href="index.html">Početna</a></li>
+                <li><a href="skripte.html">Skripte</a></li>
+                <li><a href="o-nama.html">O nama</a></li>
+                <li><a href="kontakt.html">Kontakt</a></li>
+            </ul>
+
+        </nav>
+    </header>
+
+
+    <!-- glavni sadrzaj -->
+    <main>
+
+        <section class="prviboxic">
+
+            <h2>Kontaktiraj nas</h2>
+
+            <p>
+                Imaš pitanje, prijedlog ili problem?
+                Slobodno nam se javi!
+            </p>
+            <br>
+            <p id="pzaskripte">
+                SKRIPTE NAM POŠALJI KAO LINK NA GOOGLE DOCS!
+            </p>
+
+        </section>
+
+
+        <!-- kontakt obrazac -->
+
+        <form class="kontakt_obrazac" action="https://formsubmit.co/josiprasan1@gmail.com" method="POST">
+
+            <div>
+                <label for="ime">Ime i prezime:</label>
+                <input type="text" id="ime" name="ime" placeholder="Unesi ime i prezime" required>
+            </div>
+
+            <div>
+                <label for="email">E-mail adresa:</label>
+                <input type="email" id="email" name="email" placeholder="Unesi e-mail adresu" required>
+            </div>
+
+            <div>
+                <label for="tema">Tema poruke:</label>
+                <input type="text" id="tema" name="subject" placeholder="O čemu se radi?" required>
+            </div>
+
+            <div>
+                <label for="poruka">Poruka:</label>
+                <textarea id="poruka" name="message" rows="6" placeholder="Napiši svoju poruku..." required></textarea>
+            </div>
+
+            <input type="hidden" name="_subject" value="Nova poruka sa Skripto stranice">
+            <input type="hidden" name="_captcha" value="false">
+
+            <button type="submit">Pošalji poruku</button>
+
+        </form>
+
+
+        <!-- dodatne informacije -->
+        <section class="poziv">
+
+            <h2>Zašto nas kontaktirati?</h2>
+
+            <p>
+                Želimo stvoriti mjesto na kojem studenti
+                mogu jednostavno dijeliti znanje i pomagati jedni drugima.
+            </p>
+
+        </section>
+
+    </main>
+
+
+    <!-- dole -->
+    <footer>
+
+        <h2>Skripto<span>.</span></h2>
+
+        <p>Sve skripte na jednom mjestu.</p>
+
+        <p>© 2026 JR-RIS Projekt.</p>
+
+    </footer>
+
+</body>
+
+</html>
