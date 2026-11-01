@@ -24,8 +24,6 @@ body {
     line-height: 1.6;
     display: flex;
     flex-direction: column;
-
-    background-color: #0b0810;
     position: relative;
 }
 
@@ -61,16 +59,14 @@ body::before {
     opacity: 0.7;
 }
 
-
-
 a {
     color: inherit;
 }
 
-/* GLAVNI SADRŽAJ */
 main {
     flex: 1;
 }
+
 
 /* =========================================
    NAVIGACIJA
@@ -102,9 +98,9 @@ footer span {
     color: #a879e8;
 }
 
-/* GUMB S TRI CRTICE */
-
 .izbornik {
+    display: flex;
+    align-items: center;
     position: relative;
 }
 
@@ -168,6 +164,7 @@ footer span {
 }
 
 .izbornik_linkovi.aktivno {
+    display: block;
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
@@ -198,16 +195,11 @@ footer span {
     margin-right: 12px;
 }
 
-.izbornik {
-    display: flex;
-    align-items: center;
-    position: relative;
-}
 
+/* =========================================
+   NOVA NASLOVNA SEKCIJA
+========================================= */
 
-/* NOVA NASLOVNA SEKCIJA */
-
-/* NASLOVNA SEKCIJA */
 .naslovna_nova {
     display: flex;
     justify-content: space-between;
@@ -249,7 +241,9 @@ footer span {
 }
 
 
-/* STATISTIKA */
+/* =========================================
+   STATISTIKA
+========================================= */
 
 .statistika {
     max-width: 1000px;
@@ -288,15 +282,6 @@ footer span {
 .kartica_skripte a {
     text-decoration: none;
 }
-
-
-
-
-
-
-
-
-
 
 
 /* =========================================
@@ -385,15 +370,6 @@ footer span {
 }
 
 
-
-
-
-
-
-
-
-
-
 /* =========================================
    ZAJEDNIČKE SEKCIJE
 ========================================= */
@@ -433,17 +409,6 @@ footer span {
 .poziv .gumb:hover {
     background-color: #a879e8;
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 /* =========================================
@@ -517,24 +482,6 @@ footer span {
     margin-bottom: 10px;
     margin-left: 30px;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /* =========================================
@@ -648,7 +595,11 @@ footer span {
     color: #c9b5e8;
 }
 
-/* RED ZA PRETRAGU I SORTIRANJE */
+
+/* =========================================
+   PRETRAGA I SORTIRANJE
+========================================= */
+
 .pretraga_red {
     display: flex;
     align-items: center;
@@ -667,7 +618,6 @@ footer span {
     box-sizing: border-box;
 }
 
-/* GUMB SORTIRANJE */
 .sortiranje {
     position: relative;
     flex-shrink: 0;
@@ -689,9 +639,6 @@ footer span {
     background-color: #49335e;
 }
 
-
-
-/* PADAJUĆI IZBORNIK */
 .opcije_sortiranja {
     display: none;
     position: absolute;
@@ -726,28 +673,6 @@ footer span {
 .opcije_sortiranja button:hover {
     background-color: #49335e;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /* =========================================
@@ -802,30 +727,6 @@ footer span {
     line-height: 1.7;
     margin-bottom: 15px;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /* =========================================
@@ -906,26 +807,10 @@ footer span {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* =========================================
    UPLOAD STRANICA
 ========================================= */
+
 #poruka {
     display: none;
     background-color: #160d24;
@@ -948,12 +833,10 @@ footer span {
     border-color: #4c8c55;
 }
 
-/* Sakrivanje originalnog gumba */
 #datoteka {
     display: none;
 }
 
-/* Izgled gumba Odaberi */
 .odaberi_datoteku {
     display: inline-block;
     width: fit-content;
@@ -974,6 +857,7 @@ footer span {
     font-size: 14px;
     margin-top: 8px;
 }
+
 input[type="file"]::file-selector-button {
     font-size: 0;
 }
@@ -1009,6 +893,7 @@ input[type="file"]::file-selector-button {
 input[type="file"]::file-selector-button:hover {
     background-color: #8b52d0;
 }
+
 .upload_naslov {
     background-color: #160d24;
     text-align: center;
@@ -1021,7 +906,7 @@ input[type="file"]::file-selector-button:hover {
     margin-bottom: 15px;
 }
 
-.upload_naslov>p {
+.upload_naslov > p {
     color: #bcb5c5;
     line-height: 1.7;
 }
@@ -1092,14 +977,8 @@ input[type="file"]::file-selector-button:hover {
     background-color: #a879e8;
 }
 
-#poruka {
-    margin-top: 20px;
-    text-align: center;
-    color: #bcb5c5;
-    line-height: 1.5;
-}
+/* POPUP PRIJAVE */
 
-/* POZADINA POPUP PROZORA */
 .pozadina_popup {
     display: none;
     position: fixed;
@@ -1113,7 +992,6 @@ input[type="file"]::file-selector-button:hover {
     z-index: 1000;
 }
 
-/* POPUP PROZOR */
 .popup_prijava {
     background-color: #160d24;
     border: 1px solid #49335e;
@@ -1125,25 +1003,21 @@ input[type="file"]::file-selector-button:hover {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
-/* IKONA */
 .popup_ikona {
     font-size: 35px;
     margin-bottom: 15px;
 }
 
-/* NASLOV */
 .popup_prijava h2 {
     color: white;
     margin-bottom: 15px;
 }
 
-/* TEKST */
 .popup_prijava p {
     color: #c8bfd2;
     line-height: 1.6;
 }
 
-/* GUMB ZA PRIJAVU */
 .popup_gumb {
     display: block;
     background-color: #7138b8;
@@ -1159,7 +1033,6 @@ input[type="file"]::file-selector-button:hover {
     background-color: #8b52d0;
 }
 
-/* REGISTRACIJA */
 .popup_registracija {
     margin-top: 20px;
     font-size: 14px;
@@ -1170,7 +1043,6 @@ input[type="file"]::file-selector-button:hover {
     text-decoration: none;
 }
 
-/* ZATVARANJE */
 #zatvoriPopup {
     background: none;
     border: none;
@@ -1207,15 +1079,9 @@ footer p {
 }
 
 
-
-
-
-
-
-
-
-
-/* REGISTRACIJA I PRIJAVA */
+/* =========================================
+   REGISTRACIJA I PRIJAVA
+========================================= */
 
 .auth-container {
     width: 90%;
@@ -1289,20 +1155,10 @@ footer p {
     color: #a879e8;
 }
 
-#poruka {
-    text-align: center;
-    margin-top: 15px;
-    color: #a879e8;
-}
 
-
-
-
-
-
-
-
-/* KORISNIČKI PROFIL */
+/* =========================================
+   KORISNIČKI PROFIL
+========================================= */
 
 .auth-container {
     width: 90%;
@@ -1329,8 +1185,6 @@ footer p {
     margin-bottom: 20px;
 }
 
-/* RASPORED SKRIPTI */
-
 #mojeSkripte {
     width: 100%;
     display: grid;
@@ -1338,8 +1192,6 @@ footer p {
     gap: 20px;
     margin-bottom: 30px;
 }
-
-/* KARTICE SKRIPTI */
 
 #mojeSkripte .kartica_skripte {
     width: 100%;
@@ -1371,6 +1223,7 @@ footer p {
     overflow-wrap: anywhere;
 }
 
+
 /* GUMB ODJAVA */
 
 #odjava {
@@ -1387,6 +1240,7 @@ footer p {
 #odjava:hover {
     background: #8952ce;
 }
+
 
 /* ADMIN GUMB */
 
@@ -1407,16 +1261,9 @@ footer p {
 }
 
 
-
-
-
-
-
-
-
-
-
-/* ADMIN PANEL */
+/* =========================================
+   ADMIN PANEL
+========================================= */
 
 .admin-stranica {
     max-width: 1100px;
@@ -1520,12 +1367,10 @@ footer p {
 }
 
 
+/* =========================================
+   PRILAGODBA ZA TABLETE
+========================================= */
 
-/* ============================= */
-/* PRILAGODBA ZA TABLETE I MOBITELE */
-/* ============================= */
-
-/* TABLETI */
 @media (max-width: 900px) {
 
     .navigacija {
@@ -1533,7 +1378,9 @@ footer p {
         gap: 15px;
     }
 
-    .navigacija ul {
+    /* Pravilo vrijedi samo za izravne liste u navigaciji,
+       a ne za padajući hamburger izbornik. */
+    .navigacija > ul {
         flex-wrap: wrap;
         justify-content: center;
         gap: 15px;
@@ -1559,14 +1406,16 @@ footer p {
 }
 
 
-/* MOBITELI */
+/* =========================================
+   PRILAGODBA ZA MOBITELE
+========================================= */
+
 @media (max-width: 600px) {
 
     body {
         font-size: 15px;
     }
 
-    /* NAVIGACIJA */
     header {
         padding: 15px;
     }
@@ -1580,7 +1429,8 @@ footer p {
         font-size: 25px;
     }
 
-    .navigacija ul {
+    /* Ne mijenjamo prikaz padajućeg izbornika */
+    .navigacija > ul {
         display: flex;
         flex-direction: column;
         gap: 12px;
@@ -1588,7 +1438,6 @@ footer p {
         margin: 0;
     }
 
-    /* NASLOVNA */
     .naslovna_nova {
         flex-direction: column;
         text-align: center;
@@ -1608,7 +1457,6 @@ footer p {
         max-width: 280px;
     }
 
-    /* STATISTIKA */
     .statistika {
         grid-template-columns: 1fr;
         padding: 20px;
@@ -1624,19 +1472,16 @@ footer p {
         font-size: 32px;
     }
 
-    /* SEKCIJE */
     section {
         padding-left: 15px;
         padding-right: 15px;
     }
 
-    /* KARTICE SKRIPTI */
     .kartica_skripte {
         width: 100%;
         box-sizing: border-box;
     }
 
-    /* FORME */
     input,
     textarea,
     select {
@@ -1644,7 +1489,6 @@ footer p {
         box-sizing: border-box;
     }
 
-    /* FOOTER */
     footer {
         text-align: center;
         padding: 25px 15px;
