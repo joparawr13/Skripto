@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="hr">
 
@@ -19,14 +18,27 @@
 
             <a href="index.html" class="logo">Skripto<span>.</span></a>
 
-            <ul>
-                <li><a href="index.html">Početna</a></li>
-                <li><a href="skripte.html">Skripte</a></li>
-                <li><a href="o-nama.html">O nama</a></li>
-                <li><a href="upload.html">Pošalji skriptu</a></li>
-                <li><a href="kontakt.html">Kontakt</a></li>
-                <li><a href="profil.html">Moj profil</a></li>
-            </ul>
+            <div class="izbornik">
+
+                <span class="trenutna_stranica">Početna</span>
+            
+                <button class="gumb_izbornik" id="gumbIzbornik" type="button"
+                    aria-label="Otvori navigaciju" aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            
+                <ul class="izbornik_linkovi" id="izbornikLinkovi">
+                    <li><a href="index.html">Početna</a></li>
+                    <li><a href="skripte.html">Skripte</a></li>
+                    <li><a href="o-nama.html">O nama</a></li>
+                    <li><a href="upload.html">Pošalji skriptu</a></li>
+                    <li><a href="kontakt.html">Kontakt</a></li>
+                    <li><a href="profil.html">Moj profil</a></li>
+                </ul>
+            
+            </div>
 
         </nav>
     </header>
@@ -37,16 +49,16 @@
         <section class="naslovna_nova">
             <div class="naslovni_tekst">
                 <h1>Znanje je vrijednije kada se dijeli.</h1>
-        
+
                 <p>
                     Pronađi skripte, bilješke i materijale za učenje
-                    studenata sa Sveučilišta Algebra Bernays. Podijeli svoje
+                    studenata Sveučilišta Algebra Bernays. Podijeli svoje
                     znanje i olakšaj učenje drugima.
                 </p>
-        
-                <a href="skripte.html" class="gumb">Pronađi skriptu</a>
+
+                <a href="skripte.html" class="glavni_gumb">Pronađi skriptu</a>
             </div>
-        
+
             <div class="naslovna_slika">
                 <img src="naslovna.png" alt="Ilustracija studenata">
             </div>
@@ -58,7 +70,7 @@
 
             <div class="statistika_stavka">
                 <h2 id="broj_korisnika">0</h2>
-                <p>Registriranih korisnika</p>
+                <p>Studenata korisnika</p>
             </div>
 
             <div class="statistika_stavka">
@@ -126,6 +138,46 @@
 
 
     <!-- SUPABASE -->
+    <script>
+        // HAMBURGER NAVIGACIJA
+
+        const gumbIzbornik = document.getElementById("gumbIzbornik");
+        const izbornikLinkovi = document.getElementById("izbornikLinkovi");
+
+        gumbIzbornik.addEventListener("click", function () {
+
+            gumbIzbornik.classList.toggle("aktivno");
+            izbornikLinkovi.classList.toggle("aktivno");
+
+            const otvoren = izbornikLinkovi.classList.contains("aktivno");
+
+            gumbIzbornik.setAttribute("aria-expanded", otvoren);
+        });
+
+        // Zatvaranje klikom izvan izbornika
+        document.addEventListener("click", function (event) {
+
+            if (!event.target.closest(".izbornik")) {
+                gumbIzbornik.classList.remove("aktivno");
+                izbornikLinkovi.classList.remove("aktivno");
+                gumbIzbornik.setAttribute("aria-expanded", "false");
+            }
+
+        });
+
+        // Zatvaranje nakon odabira stranice
+        izbornikLinkovi.querySelectorAll("a").forEach(function (link) {
+
+            link.addEventListener("click", function () {
+                gumbIzbornik.classList.remove("aktivno");
+                izbornikLinkovi.classList.remove("aktivno");
+                gumbIzbornik.setAttribute("aria-expanded", "false");
+            });
+
+        });
+    </script>
+
+    
     <script type="module">
 
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
@@ -244,26 +296,26 @@
 
         // DOHVACANJE STATISTIKE
 
-        
-async function dohvatiStatistiku() {
-    const { data, error } = await supabase.rpc("dohvati_javnu_statistiku");
 
-    if (error) {
-        console.error("Greška kod dohvaćanja statistike:", error);
-        return;
-    }
+        async function dohvatiStatistiku() {
+            const { data, error } = await supabase.rpc("dohvati_javnu_statistiku");
 
-    if (data && data.length > 0) {
-        document.getElementById("broj_korisnika").textContent =
-            data[0].broj_korisnika;
+            if (error) {
+                console.error("Greška kod dohvaćanja statistike:", error);
+                return;
+            }
 
-        document.getElementById("broj_skripti").textContent =
-            data[0].broj_skripti;
+            if (data && data.length > 0) {
+                document.getElementById("broj_korisnika").textContent =
+                    data[0].broj_korisnika;
 
-        document.getElementById("broj_preuzimanja").textContent =
-            data[0].broj_preuzimanja;
-    }
-}
+                document.getElementById("broj_skripti").textContent =
+                    data[0].broj_skripti;
+
+                document.getElementById("broj_preuzimanja").textContent =
+                    data[0].broj_preuzimanja;
+            }
+        }
 
 
 

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="hr">
 
@@ -10,20 +11,33 @@
 
 <body>
 
-    <!-- Navigacija -->
+    <!-- NAVIGACIJA -->
     <header>
         <nav class="navigacija">
 
             <a href="index.html" class="logo">Skripto<span>.</span></a>
 
-            <ul>
-                <li><a href="index.html">Početna</a></li>
-                <li><a href="skripte.html">Skripte</a></li>
-                <li><a href="o-nama.html">O nama</a></li>
-                <li><a href="upload.html">Pošalji skriptu</a></li>
-                <li><a href="kontakt.html">Kontakt</a></li>
-                <a href="profil.html">Moj profil</a>
-            </ul>
+            <div class="izbornik">
+
+                <span class="trenutna_stranica">Skripte</span>
+            
+                <button class="gumb_izbornik" id="gumbIzbornik" type="button"
+                    aria-label="Otvori navigaciju" aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            
+                <ul class="izbornik_linkovi" id="izbornikLinkovi">
+                    <li><a href="index.html">Početna</a></li>
+                    <li><a href="skripte.html">Skripte</a></li>
+                    <li><a href="o-nama.html">O nama</a></li>
+                    <li><a href="upload.html">Pošalji skriptu</a></li>
+                    <li><a href="kontakt.html">Kontakt</a></li>
+                    <li><a href="profil.html">Moj profil</a></li>
+                </ul>
+            
+            </div>
 
         </nav>
     </header>
@@ -42,16 +56,54 @@
         <h2>Pronađi svoju skriptu</h2>
         <p>Pretraži materijale prema nazivu, kolegiju ili autoru.</p>
 
-        <input type="text" id="pretragaSkripti" placeholder="Upiši naziv skripte ili kolegija...">
+        <!-- Red za pretraživanje i sortiranje -->
+        <div class="pretraga_red">
+
+            <input type="text" id="pretragaSkripti"
+                placeholder="Upiši naziv skripte ili kolegija...">
+
+            <!-- Sortiranje -->
+            <div class="sortiranje">
+
+                <button id="gumbSortiraj" class="gumb_sortiraj" type="button">
+                    Najnovije ▼
+                </button>
+
+                <div id="opcijeSortiranja" class="opcije_sortiranja">
+                    <button type="button" data-sort="lajkovi-asc">
+                        Sviđa mi se (Najmanje)
+                    </button>
+
+                    <button type="button" data-sort="lajkovi-desc">
+                        Sviđa mi se (Najviše)
+                    </button>
+
+                    <button type="button" data-sort="preuzimanja-desc">
+                        Preuzimanja (Najviše)
+                    </button>
+
+                    <button type="button" data-sort="preuzimanja-asc">
+                        Preuzimanja (Najmanje)
+                    </button>
+
+                    <button type="button" data-sort="najstarije">
+                        Najstarije
+                    </button>
+
+                    <button type="button" data-sort="najnovije">
+                        Najnovije
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
     </section>
 
     <!-- Postojeći i novi materijali -->
     <section class="materijali_sekcija">
 
         <h2>Dostupni materijali</h2>
-        <p class="opis_sekcije">
-            Ovdje se nalaze odobrene skripte koje su podijelili studenti.
-        </p>
 
         <div id="sve_skripte" class="popis_skripti">
             <p id="ucitavanje">Učitavanje skripti...</p>
@@ -79,32 +131,212 @@
         <p>Sve skripte na jednom mjestu.</p>
         <p>© 2026 JR-RIS Projekt.</p>
     </footer>
+</body>
+</html>
+<script>
+    // HAMBURGER NAVIGACIJA
 
+    const gumbIzbornik = document.getElementById("gumbIzbornik");
+    const izbornikLinkovi = document.getElementById("izbornikLinkovi");
+
+    gumbIzbornik.addEventListener("click", function () {
+
+        gumbIzbornik.classList.toggle("aktivno");
+        izbornikLinkovi.classList.toggle("aktivno");
+
+        const otvoren = izbornikLinkovi.classList.contains("aktivno");
+
+        gumbIzbornik.setAttribute("aria-expanded", otvoren);
+    });
+
+    // Zatvaranje klikom izvan izbornika
+    document.addEventListener("click", function (event) {
+
+        if (!event.target.closest(".izbornik")) {
+            gumbIzbornik.classList.remove("aktivno");
+            izbornikLinkovi.classList.remove("aktivno");
+            gumbIzbornik.setAttribute("aria-expanded", "false");
+        }
+
+    });
+
+    // Zatvaranje nakon odabira stranice
+    izbornikLinkovi.querySelectorAll("a").forEach(function (link) {
+
+        link.addEventListener("click", function () {
+            gumbIzbornik.classList.remove("aktivno");
+            izbornikLinkovi.classList.remove("aktivno");
+            gumbIzbornik.setAttribute("aria-expanded", "false");
+        });
+
+    });
+</script>
     <!-- Supabase povezivanje -->
     <script type="module">
 
-import { createClient } from
-    'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+        import { createClient } from
+            'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
 
-// PODACI ZA POVEZIVANJE
+        // PODACI ZA POVEZIVANJE
 
-const SUPABASE_URL = "https://ebcmpselssykwnnitqrj.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViY21wc2Vsc3N5a3dubml0cXJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM0NzA1ODAsImV4cCI6MjEwOTA0NjU4MH0.T8mRezFMw8eOajO5l8L6-6129b4Lt5Y66ZHRy0i_pzI";
+        const SUPABASE_URL = "https://ebcmpselssykwnnitqrj.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViY21wc2Vsc3N5a3dubml0cXJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM0NzA1ODAsImV4cCI6MjEwOTA0NjU4MH0.T8mRezFMw8eOajO5l8L6-6129b4Lt5Y66ZHRy0i_pzI";
 
-const supabase = createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-);
+        const supabase = createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+        );
 
 
+        
+// =========================================
 // HTML ELEMENTI
+// =========================================
 
 const spremnik = document.getElementById("sve_skripte");
 const pretraga = document.getElementById("pretragaSkripti");
 const poruka = document.getElementById("nemaSkripti");
 
+const gumbSortiraj = document.getElementById("gumbSortiraj");
+const opcijeSortiranja = document.getElementById("opcijeSortiranja");
+
 let sveSkripte = [];
+let brojLajkovaPoSkripti = {};
+let podaciLajkovaPoSkripti = {};
+let trenutnoSortiranje = "najnovije";
+
+let guestId = localStorage.getItem("skripto_guest_id");
+
+if (!guestId) {
+    guestId = crypto.randomUUID();
+    localStorage.setItem("skripto_guest_id", guestId);
+}
+
+let trenutniKorisnik = null;
+
+
+// =========================================
+// PROVJERA PRIJAVLJENOG KORISNIKA
+// =========================================
+
+async function provjeriKorisnika() {
+
+    const { data, error } = await supabase.auth.getUser();
+
+    if (error) {
+        console.error("Greška pri provjeri korisnika:", error);
+        return;
+    }
+
+    trenutniKorisnik = data.user;
+}
+
+
+// =========================================
+// FORMATIRANJE BROJA STUDENATA
+// =========================================
+
+function formatirajStudente(broj) {
+
+    broj = Number(broj) || 0;
+
+    if (broj % 10 === 1 && broj % 100 !== 11) {
+        return broj + " student";
+    }
+
+    if (
+        broj % 10 >= 2 &&
+        broj % 10 <= 4 &&
+        (broj % 100 < 12 || broj % 100 > 14)
+    ) {
+        return broj + " studenta";
+    }
+
+    return broj + " studenata";
+}
+
+
+// =========================================
+// UČITAVANJE BROJA LAJKOVA
+// =========================================
+
+async function dohvatiLajkove(skriptaId) {
+
+    const { data, error } = await supabase.rpc(
+        "dohvati_lajkove_skripte",
+        {
+            p_skripta_id: skriptaId,
+            p_guest_id: guestId
+        }
+    );
+
+    if (error) {
+        console.error("Greška pri učitavanju lajkova:", error);
+
+        return {
+            broj_lajkova: 0,
+            lajkao: false
+        };
+    }
+
+    const podaci = data?.[0] || {
+        broj_lajkova: 0,
+        lajkao: false
+    };
+
+    podaciLajkovaPoSkripti[skriptaId] = podaci;
+    brojLajkovaPoSkripti[skriptaId] = Number(podaci.broj_lajkova);
+
+    return podaci;
+}
+
+
+// =========================================
+// PROMJENA LAJKA
+// =========================================
+
+async function promijeniLajk(skripta, gumb) {
+
+    gumb.disabled = true;
+
+    try {
+
+        const { data, error } = await supabase.rpc(
+            "promijeni_lajk",
+            {
+                p_skripta_id: skripta.id,
+                p_guest_id: guestId
+            }
+        );
+
+        if (error) throw error;
+
+        const noviPodaci = data?.[0];
+
+        if (!noviPodaci) {
+            throw new Error("Nije moguće dohvatiti nove podatke o lajku.");
+        }
+
+        podaciLajkovaPoSkripti[skripta.id] = noviPodaci;
+
+        brojLajkovaPoSkripti[skripta.id] =
+            Number(noviPodaci.broj_lajkova);
+
+        // Ponovno prikazivanje kako bi se ažurirao broj i redoslijed
+        primijeniFiltre();
+
+    } catch (error) {
+
+        console.error("Greška pri promjeni lajka:", error);
+
+        alert("Greška pri promjeni lajka: " + error.message);
+
+    } finally {
+
+        gumb.disabled = false;
+    }
+}
 
 
 // =========================================
@@ -133,7 +365,15 @@ async function ucitajSkripte() {
 
     sveSkripte = data || [];
 
-    prikaziSkripte(sveSkripte);
+    brojLajkovaPoSkripti = {};
+    podaciLajkovaPoSkripti = {};
+
+    // Učitavanje lajkova za sve skripte
+    await Promise.all(
+        sveSkripte.map(skripta => dohvatiLajkove(skripta.id))
+    );
+
+    primijeniFiltre();
 }
 
 
@@ -141,221 +381,300 @@ async function ucitajSkripte() {
 // PRIKAZ SKRIPTI NA STRANICI
 // =========================================
 
-function prikaziSkripte(skripte) {
+async function prikaziSkripte(skripte) {
 
     spremnik.innerHTML = "";
-
     poruka.style.display = "none";
 
     if (skripte.length === 0) {
 
         poruka.textContent = "Trenutno nema skripti za prikaz.";
-
         poruka.style.display = "block";
 
         return;
     }
 
-
-    skripte.forEach((skripta) => {
-
-        // KARTICA
-
-        const kartica = document.createElement("div");
-
-        kartica.className = "kartica_skripte";
-
-
-        // NASLOV
-
-        const naslov = document.createElement("h3");
-
-        naslov.textContent = skripta.naslov;
-
-        kartica.appendChild(naslov);
-
-
-        // KOLEGIJ
-
-        const kolegij = document.createElement("p");
-
-        kolegij.textContent = "Kolegij: " + skripta.kolegij;
-
-        kartica.appendChild(kolegij);
-
-
-        // AUTOR
-
-        const autor = document.createElement("p");
-
-        autor.textContent = "Autor: " + (skripta.autor || "Anonimno");
-
-        kartica.appendChild(autor);
-
-
-        // OPIS
-
-        if (skripta.opis) {
-
-            const opis = document.createElement("p");
-
-            opis.textContent = skripta.opis;
-
-            kartica.appendChild(opis);
-        }
-
-
-        // BROJ PREUZIMANJA
-
-        const brojPreuzimanja = document.createElement("p");
-
-        brojPreuzimanja.className = "broj_preuzimanja";
-
-        brojPreuzimanja.textContent =
-            "Preuzimanja: " + (skripta.broj_preuzimanja ?? 0);
-
-        kartica.appendChild(brojPreuzimanja);
-
-
-        // GUMB ZA PREUZIMANJE
-
-        const gumb = document.createElement("button");
-
-        gumb.textContent = "Preuzmi PDF";
-
-        gumb.className = "gumb";
-
-
-        gumb.addEventListener("click", async () => {
-
-            gumb.textContent = "Preuzimanje...";
-
-            gumb.disabled = true;
-
-            try {
-
-                // POZIV EDGE FUNCTION
-
-                const { data, error } = await supabase.functions.invoke(
-                    "preuzmi-skriptu",
-                    {
-                        body: {
-                            id: skripta.id
-                        }
-                    }
-                );
-
-
-                if (error) {
-                    throw error;
-                }
-
-                if (!data || !data.url) {
-                    throw new Error("PDF nije dostupan.");
-                }
-
-
-                // AŽURIRANJE BROJA PREUZIMANJA
-
-                if (typeof data.broj_preuzimanja === "number") {
-
-                    skripta.broj_preuzimanja = data.broj_preuzimanja;
-
-                    brojPreuzimanja.textContent =
-                        "Preuzimanja: " + data.broj_preuzimanja;
-                }
-
-
-                // OTVARANJE PREUZIMANJA PDF-A
-
-                const poveznica = document.createElement("a");
-
-                poveznica.href = data.url;
-
-                poveznica.download =
-                    skripta.naziv_datoteke || "skripta.pdf";
-
-                document.body.appendChild(poveznica);
-
-                poveznica.click();
-
-                poveznica.remove();
-
-
-            } catch (error) {
-
-                console.error("Greška pri preuzimanju:", error);
-
-                if (error.context) {
-
-                    const detalji = await error.context.clone().text();
-
-                    console.error(
-                        "Odgovor Edge Functiona:",
-                        detalji
-                    );
-
-                    alert("Greška: " + detalji);
-
-                } else {
-
-                    alert("Greška: " + error.message);
-                }
-
-
-            } finally {
-
-                gumb.textContent = "Preuzmi PDF";
-
-                gumb.disabled = false;
+    // Prikaz najviše 30 skripti
+    const prikazaneSkripte = skripte.slice(0, 30);
+
+    const kartice = await Promise.all(
+        prikazaneSkripte.map(async (skripta) => {
+
+            const kartica = document.createElement("div");
+            kartica.className = "kartica_skripte";
+
+            // NASLOV
+            const naslov = document.createElement("h3");
+            naslov.textContent = skripta.naslov;
+            kartica.appendChild(naslov);
+
+            // KOLEGIJ
+            const kolegij = document.createElement("p");
+            kolegij.textContent = "Kolegij: " + skripta.kolegij;
+            kartica.appendChild(kolegij);
+
+            // AUTOR
+            const autor = document.createElement("p");
+            autor.textContent = "Autor: " + (skripta.autor || "Anonimno");
+            kartica.appendChild(autor);
+
+            // OPIS
+            if (skripta.opis) {
+
+                const opis = document.createElement("p");
+                opis.textContent = skripta.opis;
+                kartica.appendChild(opis);
             }
 
-        });
+            // BROJ PREUZIMANJA
+            const brojPreuzimanja = document.createElement("p");
+            brojPreuzimanja.className = "broj_preuzimanja";
 
+            brojPreuzimanja.textContent =
+                "Preuzimanja: " + (skripta.broj_preuzimanja ?? 0);
 
-        kartica.appendChild(gumb);
+            kartica.appendChild(brojPreuzimanja);
 
+            // LAJKOVI
+            let podaciLajkova = podaciLajkovaPoSkripti[skripta.id];
 
-        // DODAVANJE KARTICE NA STRANICU
+            if (!podaciLajkova) {
+                podaciLajkova = await dohvatiLajkove(skripta.id);
+            }
 
+            const redLajkova = document.createElement("div");
+            redLajkova.className = "red_lajkova";
+
+            const gumbLajk = document.createElement("button");
+            gumbLajk.className = "gumb_lajk";
+
+            gumbLajk.dataset.lajkao = String(podaciLajkova.lajkao);
+
+            gumbLajk.textContent = podaciLajkova.lajkao
+                ? "♥ Sviđa mi se"
+                : "♡ Sviđa mi se";
+
+            if (podaciLajkova.lajkao) {
+                gumbLajk.classList.add("lajkano");
+            }
+
+            const brojLajkova = document.createElement("span");
+            brojLajkova.className = "broj_lajkova";
+
+            brojLajkova.textContent =
+                formatirajStudente(podaciLajkova.broj_lajkova);
+
+            gumbLajk.addEventListener("click", () => {
+                promijeniLajk(skripta, gumbLajk);
+            });
+
+            redLajkova.appendChild(gumbLajk);
+            redLajkova.appendChild(brojLajkova);
+            kartica.appendChild(redLajkova);
+
+            // GUMB ZA PREUZIMANJE
+            const gumb = document.createElement("button");
+
+            gumb.textContent = "Preuzmi PDF";
+            gumb.className = "gumb";
+
+            gumb.addEventListener("click", async () => {
+
+                gumb.textContent = "Preuzimanje...";
+                gumb.disabled = true;
+
+                try {
+
+                    const { data, error } = await supabase.functions.invoke(
+                        "preuzmi-skriptu",
+                        {
+                            body: {
+                                id: skripta.id
+                            }
+                        }
+                    );
+
+                    if (error) throw error;
+
+                    if (!data || !data.url) {
+                        throw new Error("PDF nije dostupan.");
+                    }
+
+                    if (typeof data.broj_preuzimanja === "number") {
+
+                        skripta.broj_preuzimanja = data.broj_preuzimanja;
+
+                        brojPreuzimanja.textContent =
+                            "Preuzimanja: " + data.broj_preuzimanja;
+
+                        // Ponovno sortiranje ako je odabrano sortiranje po preuzimanjima
+                        if (
+                            trenutnoSortiranje === "preuzimanja-asc" ||
+                            trenutnoSortiranje === "preuzimanja-desc"
+                        ) {
+                            primijeniFiltre();
+                        }
+                    }
+
+                    const poveznica = document.createElement("a");
+
+                    poveznica.href = data.url;
+                    poveznica.download =
+                        skripta.naziv_datoteke || "skripta.pdf";
+
+                    document.body.appendChild(poveznica);
+                    poveznica.click();
+                    poveznica.remove();
+
+                } catch (error) {
+
+                    console.error("Greška pri preuzimanju:", error);
+
+                    if (error.context) {
+
+                        const detalji = await error.context.clone().text();
+
+                        console.error("Odgovor Edge Functiona:", detalji);
+                        alert("Greška: " + detalji);
+
+                    } else {
+
+                        alert("Greška: " + error.message);
+                    }
+
+                } finally {
+
+                    gumb.textContent = "Preuzmi PDF";
+                    gumb.disabled = false;
+                }
+            });
+
+            kartica.appendChild(gumb);
+
+            return kartica;
+        })
+    );
+
+    // Dodavanje kartica pravilnim redoslijedom
+    kartice.forEach(kartica => {
         spremnik.appendChild(kartica);
-
     });
-
 }
 
 
 // =========================================
-// PRETRAŽIVANJE SKRIPTI
+// PRETRAŽIVANJE I SORTIRANJE
 // =========================================
 
-pretraga.addEventListener("input", () => {
+function primijeniFiltre() {
 
     const pojam = pretraga.value.toLowerCase().trim();
 
-    const filtriraneSkripte = sveSkripte.filter((skripta) => {
+    // PRETRAŽIVANJE
+    let filtriraneSkripte = sveSkripte.filter((skripta) => {
 
         return (
-
             (skripta.naslov || "").toLowerCase().includes(pojam) ||
-
             (skripta.kolegij || "").toLowerCase().includes(pojam) ||
-
             (skripta.autor || "").toLowerCase().includes(pojam)
-
         );
+    });
 
+    // SORTIRANJE
+    filtriraneSkripte.sort((a, b) => {
+
+        switch (trenutnoSortiranje) {
+
+            case "lajkovi-asc":
+                return (brojLajkovaPoSkripti[a.id] || 0) -
+                    (brojLajkovaPoSkripti[b.id] || 0);
+
+            case "lajkovi-desc":
+                return (brojLajkovaPoSkripti[b.id] || 0) -
+                    (brojLajkovaPoSkripti[a.id] || 0);
+
+            case "preuzimanja-desc":
+                return (b.broj_preuzimanja || 0) -
+                    (a.broj_preuzimanja || 0);
+
+            case "preuzimanja-asc":
+                return (a.broj_preuzimanja || 0) -
+                    (b.broj_preuzimanja || 0);
+
+            case "najstarije":
+                return new Date(a.datum_objave) -
+                    new Date(b.datum_objave);
+
+            case "najnovije":
+            default:
+                return new Date(b.datum_objave) -
+                    new Date(a.datum_objave);
+        }
     });
 
     prikaziSkripte(filtriraneSkripte);
+}
 
+
+// =========================================
+// OTVARANJE I ZATVARANJE SORTIRANJA
+// =========================================
+
+gumbSortiraj.addEventListener("click", () => {
+
+    opcijeSortiranja.classList.toggle("aktivno");
+});
+
+
+// ODABIR NAČINA SORTIRANJA
+
+opcijeSortiranja.querySelectorAll("button").forEach((gumb) => {
+
+gumb.addEventListener("click", () => {
+
+    trenutnoSortiranje = gumb.dataset.sort;
+
+    gumbSortiraj.textContent =
+        gumb.textContent.trim() + " ▼";
+
+    opcijeSortiranja.classList.remove("aktivno");
+
+    primijeniFiltre();
+});
+});
+
+
+// ZATVARANJE KLIKOM IZVAN IZBORNIKA
+
+document.addEventListener("click", (event) => {
+
+    if (
+        !gumbSortiraj.contains(event.target) &&
+        !opcijeSortiranja.contains(event.target)
+    ) {
+        opcijeSortiranja.classList.remove("aktivno");
+    }
 });
 
 
 // =========================================
-// POKRETANJE
+// PRETRAŽIVANJE
 // =========================================
 
-ucitajSkripte();
+pretraga.addEventListener("input", () => {
+    primijeniFiltre();
+});
 
-    </script>
+
+// =========================================
+// POKRETANJE STRANICE
+// =========================================
+
+async function pokreniStranicu() {
+
+    await provjeriKorisnika();
+    await ucitajSkripte();
+}
+
+pokreniStranicu();
+</script>

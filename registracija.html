@@ -10,19 +10,33 @@
 
 <body>
 
+    <!-- NAVIGACIJA -->
     <header>
         <nav class="navigacija">
 
             <a href="index.html" class="logo">Skripto<span>.</span></a>
 
-            <ul>
-                <li><a href="index.html">Početna</a></li>
-                <li><a href="skripte.html">Skripte</a></li>
-                <li><a href="o-nama.html">O nama</a></li>
-                <li><a href="upload.html">Pošalji skriptu</a></li>
-                <li><a href="kontakt.html">Kontakt</a></li>
-                <a href="profil.html">Moj profil</a>
-            </ul>
+            <div class="izbornik">
+
+                <span class="trenutna_stranica">Moj profil</span>
+
+                <button class="gumb_izbornik" id="gumbIzbornik" type="button" aria-label="Otvori navigaciju"
+                    aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
+                <ul class="izbornik_linkovi" id="izbornikLinkovi">
+                    <li><a href="index.html">Početna</a></li>
+                    <li><a href="skripte.html">Skripte</a></li>
+                    <li><a href="o-nama.html">O nama</a></li>
+                    <li><a href="upload.html">Pošalji skriptu</a></li>
+                    <li><a href="kontakt.html">Kontakt</a></li>
+                    <li><a href="profil.html">Moj profil</a></li>
+                </ul>
+
+            </div>
 
         </nav>
     </header>
@@ -74,151 +88,188 @@
             </p>
         </div>
     </main>
-
-    <script type="module">
-
-
-        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-
-        const SUPABASE_URL = "https://ebcmpselssykwnnitqrj.supabase.co";
-        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViY21wc2Vsc3N5a3dubml0cXJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM0NzA1ODAsImV4cCI6MjEwOTA0NjU4MH0.T8mRezFMw8eOajO5l8L6-6129b4Lt5Y66ZHRy0i_pzI";
-
-        const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        const forma = document.querySelector(".auth-form");
-        const poruka = document.getElementById("poruka");
-
-        
-forma.addEventListener("submit", async function (event) {
-    event.preventDefault();
-
-    const ime = document.getElementById("ime").value.trim();
-    const prezime = document.getElementById("prezime").value.trim();
-    const username = document.getElementById("username").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const lozinka = document.getElementById("lozinka").value;
-    const potvrdaLozinke = document.getElementById("potvrdaLozinke").value;
-
-    const gumb = forma.querySelector("button");
-
-    // Početna provjera
-    poruka.textContent = "";
-
-    if (!ime || !prezime || !username || !email || !lozinka || !potvrdaLozinke) {
-        poruka.textContent = "Ispuni sva polja.";
-        return;
-    }
-
-    // Provjera usernamea
-    if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
-        poruka.textContent =
-            "Username mora imati 3 do 20 znakova. Dozvoljena su slova, brojevi i donja crta.";
-        return;
-    }
-
-    // Provjera duljine lozinke
-    if (lozinka.length < 8) {
-        poruka.textContent = "Lozinka mora imati najmanje 8 znakova.";
-        return;
-    }
-
-    // Provjera barem jednog slova
-    if (!/[a-zA-Z]/.test(lozinka)) {
-        poruka.textContent = "Lozinka mora sadržavati barem jedno slovo.";
-        return;
-    }
-
-    // Provjera barem jednog broja
-    if (!/[0-9]/.test(lozinka)) {
-        poruka.textContent = "Lozinka mora sadržavati barem jedan broj.";
-        return;
-    }
-
-    // Provjera podudaranja lozinki
-    if (lozinka !== potvrdaLozinke) {
-        poruka.textContent = "Lozinke se ne podudaraju.";
-        return;
-    }
-
-    gumb.disabled = true;
-    gumb.textContent = "Registracija u tijeku...";
-
-    try {
-        // Registracija korisnika
-        const { data, error } = await supabase.auth.signUp({
-            email: email,
-            password: lozinka,
-            options: {
-                data: {
-                    ime: ime,
-                    prezime: prezime,
-                    username: username
-                }
-            }
-        });
-
-        if (error) {
-            if (error.message.toLowerCase().includes("password")) {
-                throw new Error(
-                    "Lozinka mora imati najmanje 8 znakova, jedno slovo i jedan broj."
-                );
-            }
-
-            throw error;
-        }
-
-        if (!data.session) {
-            throw new Error(
-                "Registracija nije dovršena automatskom prijavom. Provjeri Supabase postavke potvrde e-maila."
-            );
-        }
-
-        // Spremanje podataka u tablicu profili
-        const { error: profilError } = await supabase
-            .from("profili")
-            .insert({
-                id: data.user.id,
-                ime: ime,
-                prezime: prezime,
-                username: username,
-                email: email
-            });
-
-        if (profilError) {
-            if (profilError.code === "23505") {
-                throw new Error("Ovaj username već postoji. Odaberi drugi.");
-            }
-
-            throw profilError;
-        }
-
-        poruka.textContent =
-            "Uspješna registracija! Preusmjeravanje na profil...";
-
-        forma.reset();
-
-        setTimeout(() => {
-            window.location.href = "profil.html";
-        }, 1000);
-
-    } catch (error) {
-        console.error("Greška pri registraciji:", error);
-
-        if (error.code === "23505") {
-            poruka.textContent = "Ovaj username već postoji. Odaberi drugi.";
-        } else {
-            poruka.textContent = error.message;
-        }
-
-        gumb.disabled = false;
-        gumb.textContent = "Registriraj se";
-    }
-});
-
-
-
-    </script>
-
 </body>
 
 </html>
+<script>
+    // HAMBURGER NAVIGACIJA
+
+    const gumbIzbornik = document.getElementById("gumbIzbornik");
+    const izbornikLinkovi = document.getElementById("izbornikLinkovi");
+
+    gumbIzbornik.addEventListener("click", function () {
+
+        gumbIzbornik.classList.toggle("aktivno");
+        izbornikLinkovi.classList.toggle("aktivno");
+
+        const otvoren = izbornikLinkovi.classList.contains("aktivno");
+
+        gumbIzbornik.setAttribute("aria-expanded", otvoren);
+    });
+
+    // Zatvaranje klikom izvan izbornika
+    document.addEventListener("click", function (event) {
+
+        if (!event.target.closest(".izbornik")) {
+            gumbIzbornik.classList.remove("aktivno");
+            izbornikLinkovi.classList.remove("aktivno");
+            gumbIzbornik.setAttribute("aria-expanded", "false");
+        }
+
+    });
+
+    // Zatvaranje nakon odabira stranice
+    izbornikLinkovi.querySelectorAll("a").forEach(function (link) {
+
+        link.addEventListener("click", function () {
+            gumbIzbornik.classList.remove("aktivno");
+            izbornikLinkovi.classList.remove("aktivno");
+            gumbIzbornik.setAttribute("aria-expanded", "false");
+        });
+
+    });
+</script>
+
+<script type="module">
+
+
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+    const SUPABASE_URL = "https://ebcmpselssykwnnitqrj.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViY21wc2Vsc3N5a3dubml0cXJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM0NzA1ODAsImV4cCI6MjEwOTA0NjU4MH0.T8mRezFMw8eOajO5l8L6-6129b4Lt5Y66ZHRy0i_pzI";
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const forma = document.querySelector(".auth-form");
+    const poruka = document.getElementById("poruka");
+
+
+    forma.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const ime = document.getElementById("ime").value.trim();
+        const prezime = document.getElementById("prezime").value.trim();
+        const username = document.getElementById("username").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const lozinka = document.getElementById("lozinka").value;
+        const potvrdaLozinke = document.getElementById("potvrdaLozinke").value;
+
+        const gumb = forma.querySelector("button");
+
+        // Početna provjera
+        poruka.textContent = "";
+
+        if (!ime || !prezime || !username || !email || !lozinka || !potvrdaLozinke) {
+            poruka.textContent = "Ispuni sva polja.";
+            return;
+        }
+
+        // Provjera usernamea
+        if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
+            poruka.textContent =
+                "Username mora imati 3 do 20 znakova. Dozvoljena su slova, brojevi i donja crta.";
+            return;
+        }
+
+        // Provjera duljine lozinke
+        if (lozinka.length < 8) {
+            poruka.textContent = "Lozinka mora imati najmanje 8 znakova.";
+            return;
+        }
+
+        // Provjera barem jednog slova
+        if (!/[a-zA-Z]/.test(lozinka)) {
+            poruka.textContent = "Lozinka mora sadržavati barem jedno slovo.";
+            return;
+        }
+
+        // Provjera barem jednog broja
+        if (!/[0-9]/.test(lozinka)) {
+            poruka.textContent = "Lozinka mora sadržavati barem jedan broj.";
+            return;
+        }
+
+        // Provjera podudaranja lozinki
+        if (lozinka !== potvrdaLozinke) {
+            poruka.textContent = "Lozinke se ne podudaraju.";
+            return;
+        }
+
+        gumb.disabled = true;
+        gumb.textContent = "Registracija u tijeku...";
+
+        try {
+            // Registracija korisnika
+            const { data, error } = await supabase.auth.signUp({
+                email: email,
+                password: lozinka,
+                options: {
+                    data: {
+                        ime: ime,
+                        prezime: prezime,
+                        username: username
+                    }
+                }
+            });
+
+            if (error) {
+                if (error.message.toLowerCase().includes("password")) {
+                    throw new Error(
+                        "Lozinka mora imati najmanje 8 znakova, jedno slovo i jedan broj."
+                    );
+                }
+
+                throw error;
+            }
+
+            if (!data.session) {
+                throw new Error(
+                    "Registracija nije dovršena automatskom prijavom. Provjeri Supabase postavke potvrde e-maila."
+                );
+            }
+
+            // Spremanje podataka u tablicu profili
+            const { error: profilError } = await supabase
+                .from("profili")
+                .insert({
+                    id: data.user.id,
+                    ime: ime,
+                    prezime: prezime,
+                    username: username,
+                    email: email
+                });
+
+            if (profilError) {
+                if (profilError.code === "23505") {
+                    throw new Error("Ovaj username već postoji. Odaberi drugi.");
+                }
+
+                throw profilError;
+            }
+
+            poruka.textContent =
+                "Uspješna registracija! Preusmjeravanje na profil...";
+
+            forma.reset();
+
+            setTimeout(() => {
+                window.location.href = "profil.html";
+            }, 1000);
+
+        } catch (error) {
+            console.error("Greška pri registraciji:", error);
+
+            if (error.code === "23505") {
+                poruka.textContent = "Ovaj username već postoji. Odaberi drugi.";
+            } else {
+                poruka.textContent = error.message;
+            }
+
+            gumb.disabled = false;
+            gumb.textContent = "Registriraj se";
+        }
+    });
+
+
+
+</script>

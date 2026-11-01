@@ -13,20 +13,33 @@
 
 <body>
 
-    <!-- pocetak -->
+    <!-- NAVIGACIJA -->
     <header>
         <nav class="navigacija">
 
             <a href="index.html" class="logo">Skripto<span>.</span></a>
 
-            <ul>
-                <li><a href="index.html">Početna</a></li>
-                <li><a href="skripte.html">Skripte</a></li>
-                <li><a href="o-nama.html">O nama</a></li>
-                <li><a href="upload.html">Pošalji skriptu</a></li>
-                <li><a href="kontakt.html">Kontakt</a></li>
-                <a href="profil.html">Moj profil</a>
-            </ul>
+            <div class="izbornik">
+
+                <span class="trenutna_stranica">O nama</span>
+            
+                <button class="gumb_izbornik" id="gumbIzbornik" type="button"
+                    aria-label="Otvori navigaciju" aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            
+                <ul class="izbornik_linkovi" id="izbornikLinkovi">
+                    <li><a href="index.html">Početna</a></li>
+                    <li><a href="skripte.html">Skripte</a></li>
+                    <li><a href="o-nama.html">O nama</a></li>
+                    <li><a href="upload.html">Pošalji skriptu</a></li>
+                    <li><a href="kontakt.html">Kontakt</a></li>
+                    <li><a href="profil.html">Moj profil</a></li>
+                </ul>
+            
+            </div>
 
         </nav>
     </header>
@@ -53,14 +66,13 @@
                 <h2>Tko smo mi?</h2>
 
                 <p>
-                    Skripto je platforma namijenjena studentima Sveučilišta Algebra Bernays koji žele jednostavno pronaći i dijeliti
-                    materijale za učenje.
+                    Studenti poput Vas kojima je dosta klikanja na google drive linkove koji više ne postoje i skrolanja kroz WhatsApp grupe do beskraja.
                 </p>
 
                 <p>
                     Naš cilj je olakšati studentski život i omogućiti
                     studentima da međusobno dijele svoje znanje,
-                    bilješke i skripte.
+                    bilješke i skripte jer svi mi imamo barem neke korisne bilješke koje mogu pomoći našim sadašnjim i budućim kolegama.
                 </p>
 
             </article>
@@ -73,7 +85,11 @@
                 <p>
                     Želimo stvoriti mjesto na kojem će svaki student
                     moći pronaći korisne materijale za svoje kolegije,
-                    bez obzira na godinu i studij koju pohađa.
+                    bez obzira na godinu i studij koji pohađa bez da ući iz skripta koje nemaju smisla i kraja.
+                </p>
+
+                <p>
+                    Dosta nam je AI generiranih skripta i skripta starih 10 godina. Ovdje svi mogu pronaći bilješke, skripte i materijale pisane od drugih studenata.
                 </p>
 
             </article>
@@ -127,3 +143,41 @@
 </body>
 
 </html>
+<script>
+    // HAMBURGER NAVIGACIJA
+
+    const gumbIzbornik = document.getElementById("gumbIzbornik");
+    const izbornikLinkovi = document.getElementById("izbornikLinkovi");
+
+    gumbIzbornik.addEventListener("click", function () {
+
+        gumbIzbornik.classList.toggle("aktivno");
+        izbornikLinkovi.classList.toggle("aktivno");
+
+        const otvoren = izbornikLinkovi.classList.contains("aktivno");
+
+        gumbIzbornik.setAttribute("aria-expanded", otvoren);
+    });
+
+    // Zatvaranje klikom izvan izbornika
+    document.addEventListener("click", function (event) {
+
+        if (!event.target.closest(".izbornik")) {
+            gumbIzbornik.classList.remove("aktivno");
+            izbornikLinkovi.classList.remove("aktivno");
+            gumbIzbornik.setAttribute("aria-expanded", "false");
+        }
+
+    });
+
+    // Zatvaranje nakon odabira stranice
+    izbornikLinkovi.querySelectorAll("a").forEach(function (link) {
+
+        link.addEventListener("click", function () {
+            gumbIzbornik.classList.remove("aktivno");
+            izbornikLinkovi.classList.remove("aktivno");
+            gumbIzbornik.setAttribute("aria-expanded", "false");
+        });
+
+    });
+</script>

@@ -1,241 +1,424 @@
 
 <!DOCTYPE html>
 <html lang="hr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin panel | Skripto</title>
     <link rel="stylesheet" href="css/stil.css">
 </head>
+
 <body>
 
-<header>
-    <nav class="navigacija">
-        <a href="index.html" class="logo">Skrip<span>to</span></a>
+    <!-- NAVIGACIJA -->
+    <header>
+        <nav class="navigacija">
 
-        <ul>
-            <li><a href="index.html">Početna</a></li>
-            <li><a href="skripte.html">Skripte</a></li>
-            <li><a href="o-nama.html">O nama</a></li>
-            <li><a href="kontakt.html">Kontakt</a></li>
-            <li><a href="profil.html">Profil</a></li>
-            <li><a href="#" id="odjava">Odjava</a></li>
-        </ul>
-    </nav>
-</header>
+            <a href="index.html" class="logo">Skripto<span>.</span></a>
 
-<main class="admin-stranica">
-    <section class="admin-naslov">
-        <h1>Admin panel</h1>
-        <p>Pregledaj pristigle skripte i odluči koje će biti objavljene.</p>
-    </section>
+            <div class="izbornik">
 
-    <section class="admin-sadrzaj">
-        <div class="admin-statistika">
-            <h2>Skripte na čekanju: <span id="broj-skripti">0</span></h2>
-        </div>
+                <span class="trenutna_stranica">ADMINISTRACIJA</span>
 
-        <p id="poruka" class="admin-poruka">Učitavanje skripti...</p>
-        <div id="lista-skripti"></div>
-    </section>
-</main>
+                <button class="gumb_izbornik" id="gumbIzbornik"
+                    type="button" aria-label="Otvori navigaciju"
+                    aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
 
-<footer>
-    <p>&copy; 2026 <span>Skripto</span>. Sva prava pridržana.</p>
-</footer>
+                <ul class="izbornik_linkovi" id="izbornikLinkovi">
+                    <li><a href="index.html">Početna</a></li>
+                    <li><a href="skripte.html">Skripte</a></li>
+                    <li><a href="o-nama.html">O nama</a></li>
+                    <li><a href="upload.html">Pošalji skriptu</a></li>
+                    <li><a href="kontakt.html">Kontakt</a></li>
+                    <li><a href="profil.html">Moj profil</a></li>
+                </ul>
 
-<script type="module">
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-
-const SUPABASE_URL = "https://ebcmpselssykwnnitqrj.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViY21wc2Vsc3N5a3dubml0cXJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM0NzA1ODAsImV4cCI6MjEwOTA0NjU4MH0.T8mRezFMw8eOajO5l8L6-6129b4Lt5Y66ZHRy0i_pzI";
-
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-
-const listaSkripti = document.getElementById("lista-skripti");
-const poruka = document.getElementById("poruka");
-const brojSkripti = document.getElementById("broj-skripti");
-
-let administrator = false;
-
-// Zaštita stranice
-async function provjeriAdmina() {
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
-
-    if (userError || !user) {
-        alert("Moraš se prijaviti.");
-        window.location.href = "prijava.html";
-        return;
-    }
-
-    // Provjera administratorskih ovlasti preko SQL funkcije je_admin()
-    const { data, error } = await supabase.rpc("je_admin");
-
-    if (error || data !== true) {
-        alert("Nemaš dopuštenje za pristup ovoj stranici.");
-        window.location.href = "index.html";
-        return;
-    }
-
-    administrator = true;
-    ucitajSkripte();
-}
-
-// Siguran prikaz teksta
-function siguranTekst(tekst) {
-    return String(tekst ?? "").replace(/[&<>"']/g, znak => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#039;"
-    })[znak]);
-}
-
-// Učitavanje skripti koje čekaju odobrenje
-async function ucitajSkripte() {
-    if (!administrator) return;
-
-    poruka.textContent = "Učitavanje skripti...";
-    listaSkripti.innerHTML = "";
-
-    const { data: skripte, error } = await supabase
-        .from("skripte")
-        .select("*")
-        .eq("status", "pending")
-        .order("datum_objave", { ascending: false });
-
-    if (error) {
-        console.error(error);
-        poruka.textContent = "Greška pri učitavanju skripti. Provjeri RLS pravila.";
-        return;
-    }
-
-    brojSkripti.textContent = skripte.length;
-
-    if (skripte.length === 0) {
-        poruka.textContent = "Trenutno nema skripti koje čekaju odobrenje.";
-        return;
-    }
-
-    poruka.textContent = "";
-
-    for (const skripta of skripte) {
-        const datum = skripta.datum_objave
-            ? new Date(skripta.datum_objave).toLocaleDateString("hr-HR")
-            : "Nepoznat datum";
-
-        const kartica = document.createElement("article");
-        kartica.className = "admin-kartica";
-
-        kartica.innerHTML = `
-            <div class="admin-kartica-info">
-                <h3>${siguranTekst(skripta.naslov)}</h3>
-                <p><strong>Kolegij:</strong> ${siguranTekst(skripta.kolegij)}</p>
-                <p><strong>Autor:</strong> ${siguranTekst(skripta.autor)}</p>
-                <p><strong>Datum objave:</strong> ${siguranTekst(datum)}</p>
-                <p><strong>Opis:</strong> ${siguranTekst(skripta.opis || "Nema opisa.")}</p>
-                <p><strong>Datoteka:</strong> ${siguranTekst(skripta.naziv_datoteke)}</p>
             </div>
 
-            <div class="admin-gumbi">
-                <button class="admin-pregled" data-akcija="pregled" data-id="${skripta.id}">
-                    Pregledaj PDF
-                </button>
+        </nav>
+    </header>
 
-                <button class="admin-odobri" data-akcija="odobri" data-id="${skripta.id}">
-                    Odobri
-                </button>
+    <!-- GLAVNI SADRŽAJ -->
+    <main class="admin-stranica">
 
-                <button class="admin-odbij" data-akcija="odbij" data-id="${skripta.id}">
-                    Odbij
-                </button>
+        <section class="admin-naslov">
+            <h1>Admin panel</h1>
+            <p>Pregledaj pristigle skripte i odluči koje će biti objavljene.</p>
+        </section>
+
+        <section class="admin-sadrzaj">
+
+            <div class="admin-statistika">
+                <h2>Skripte na čekanju:
+                    <span id="broj-skripti">0</span>
+                </h2>
             </div>
-        `;
 
-        listaSkripti.appendChild(kartica);
-    }
-}
+            <p id="poruka" class="admin-poruka">
+                Učitavanje skripti...
+            </p>
 
-// Klikovi na gumbe
-listaSkripti.addEventListener("click", async function(event) {
-    const gumb = event.target.closest("button[data-akcija]");
-    if (!gumb || !administrator) return;
+            <div id="lista-skripti"></div>
 
-    const id = gumb.dataset.id;
-    const akcija = gumb.dataset.akcija;
+        </section>
 
-    if (akcija === "pregled") {
-        const { data: skripta, error } = await supabase
-            .from("skripte")
-            .select("putanja_datoteke")
-            .eq("id", id)
-            .single();
+    </main>
 
-        if (error || !skripta) {
-            alert("Ne mogu pronaći PDF datoteku.");
-            return;
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2026 <span>Skripto</span>. Sva prava pridržana.</p>
+    </footer>
+
+    <!-- HAMBURGER NAVIGACIJA -->
+    <script>
+
+        const gumbIzbornik = document.getElementById("gumbIzbornik");
+        const izbornikLinkovi = document.getElementById("izbornikLinkovi");
+
+        gumbIzbornik.addEventListener("click", function () {
+
+            gumbIzbornik.classList.toggle("aktivno");
+            izbornikLinkovi.classList.toggle("aktivno");
+
+            const otvoren = izbornikLinkovi.classList.contains("aktivno");
+
+            gumbIzbornik.setAttribute("aria-expanded", otvoren);
+
+        });
+
+        // Zatvaranje klikom izvan izbornika
+        document.addEventListener("click", function (event) {
+
+            if (!event.target.closest(".izbornik")) {
+
+                gumbIzbornik.classList.remove("aktivno");
+                izbornikLinkovi.classList.remove("aktivno");
+
+                gumbIzbornik.setAttribute("aria-expanded", "false");
+
+            }
+
+        });
+
+        // Zatvaranje nakon odabira stranice
+        izbornikLinkovi.querySelectorAll("a").forEach(function (link) {
+
+            link.addEventListener("click", function () {
+
+                gumbIzbornik.classList.remove("aktivno");
+                izbornikLinkovi.classList.remove("aktivno");
+
+                gumbIzbornik.setAttribute("aria-expanded", "false");
+
+            });
+
+        });
+
+    </script>
+
+    <!-- SUPABASE I ADMIN PANEL -->
+    <script type="module">
+
+        import { createClient } from
+            'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+        const SUPABASE_URL = "https://ebcmpselssykwnnitqrj.supabase.co";
+
+        // Ovdje upiši svoj postojeći anon/publishable ključ
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViY21wc2Vsc3N5a3dubml0cXJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM0NzA1ODAsImV4cCI6MjEwOTA0NjU4MH0.T8mRezFMw8eOajO5l8L6-6129b4Lt5Y66ZHRy0i_pzI";
+
+        const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        const listaSkripti = document.getElementById("lista-skripti");
+        const poruka = document.getElementById("poruka");
+        const brojSkripti = document.getElementById("broj-skripti");
+
+        let administrator = false;
+
+
+        // SIGURAN PRIKAZ TEKSTA
+        function siguranTekst(tekst) {
+
+            return String(tekst ?? "").replace(/[&<>"']/g, znak => ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#039;"
+            })[znak]);
+
         }
 
-        const { data, error: storageError } = await supabase
-            .storage
-            .from("skripte")
-            .createSignedUrl(skripta.putanja_datoteke, 60);
 
-        if (storageError || !data?.signedUrl) {
-            alert("Ne mogu otvoriti PDF. Provjeri Storage pravila.");
-            return;
+        // PROVJERA ADMINISTRATORSKIH OVLASTI
+        async function provjeriAdmina() {
+
+            const { data: { user }, error: userError } =
+                await supabase.auth.getUser();
+
+            if (userError || !user) {
+
+                alert("Moraš se prijaviti.");
+                window.location.href = "prijava.html";
+
+                return;
+
+            }
+
+            const { data, error } = await supabase.rpc("je_admin");
+
+            if (error || data !== true) {
+
+                alert("Nemaš dopuštenje za pristup ovoj stranici.");
+                window.location.href = "index.html";
+
+                return;
+
+            }
+
+            administrator = true;
+
+            ucitajSkripte();
+
         }
 
-        window.open(data.signedUrl, "_blank");
-        return;
-    }
 
-    if (akcija === "odobri" || akcija === "odbij") {
-        const noviStatus = akcija === "odobri" ? "approved" : "rejected";
+        // UČITAVANJE SKRIPTI NA ČEKANJU
+        async function ucitajSkripte() {
 
-        const potvrda = confirm(
-            akcija === "odobri"
-                ? "Želiš li odobriti ovu skriptu?"
-                : "Želiš li odbiti ovu skriptu?"
-        );
+            if (!administrator) return;
 
-        if (!potvrda) return;
+            poruka.textContent = "Učitavanje skripti...";
+            listaSkripti.innerHTML = "";
 
-        gumb.disabled = true;
+            const { data: skripte, error } = await supabase
+                .from("skripte")
+                .select("*")
+                .eq("status", "pending")
+                .order("datum_objave", { ascending: false });
 
-        const { error } = await supabase
-            .from("skripte")
-            .update({ status: noviStatus })
-            .eq("id", id)
-            .eq("status", "pending");
+            if (error) {
 
-        if (error) {
-            console.error(error);
-            alert("Došlo je do greške. Provjeri administratorska RLS pravila.");
-            gumb.disabled = false;
-            return;
+                console.error(error);
+
+                poruka.textContent =
+                    "Greška pri učitavanju skripti. Provjeri RLS pravila.";
+
+                return;
+
+            }
+
+            brojSkripti.textContent = skripte.length;
+
+            if (skripte.length === 0) {
+
+                poruka.textContent =
+                    "Trenutno nema skripti koje čekaju odobrenje.";
+
+                return;
+
+            }
+
+            poruka.textContent = "";
+
+            for (const skripta of skripte) {
+
+                const datum = skripta.datum_objave
+                    ? new Date(skripta.datum_objave).toLocaleDateString("hr-HR")
+                    : "Nepoznat datum";
+
+                const kartica = document.createElement("article");
+
+                kartica.className = "admin-kartica";
+
+                kartica.innerHTML = `
+
+                    <div class="admin-kartica-info">
+
+                        <h3>${siguranTekst(skripta.naslov)}</h3>
+
+                        <p>
+                            <strong>Kolegij:</strong>
+                            ${siguranTekst(skripta.kolegij)}
+                        </p>
+
+                        <p>
+                            <strong>Autor:</strong>
+                            ${siguranTekst(skripta.autor)}
+                        </p>
+
+                        <p>
+                            <strong>Datum objave:</strong>
+                            ${siguranTekst(datum)}
+                        </p>
+
+                        <p>
+                            <strong>Opis:</strong>
+                            ${siguranTekst(skripta.opis || "Nema opisa.")}
+                        </p>
+
+                        <p>
+                            <strong>Datoteka:</strong>
+                            ${siguranTekst(skripta.naziv_datoteke)}
+                        </p>
+
+                    </div>
+
+                    <div class="admin-gumbi">
+
+                        <button class="admin-pregled"
+                            data-akcija="pregled"
+                            data-id="${siguranTekst(skripta.id)}">
+                            Pregledaj PDF
+                        </button>
+
+                        <button class="admin-odobri"
+                            data-akcija="odobri"
+                            data-id="${siguranTekst(skripta.id)}">
+                            Odobri
+                        </button>
+
+                        <button class="admin-odbij"
+                            data-akcija="odbij"
+                            data-id="${siguranTekst(skripta.id)}">
+                            Odbij
+                        </button>
+
+                    </div>
+
+                `;
+
+                listaSkripti.appendChild(kartica);
+
+            }
+
         }
 
-        alert(akcija === "odobri"
-            ? "Skripta je uspješno odobrena!"
-            : "Skripta je odbijena."
-        );
 
-        ucitajSkripte();
-    }
-});
+        // KLIKOVI NA GUMBE
+        listaSkripti.addEventListener("click", async function(event) {
 
-// Odjava
-document.getElementById("odjava").addEventListener("click", async function(event) {
-    event.preventDefault();
+            const gumb = event.target.closest("button[data-akcija]");
 
-    await supabase.auth.signOut();
-    window.location.href = "prijava.html";
-});
+            if (!gumb || !administrator) return;
 
-provjeriAdmina();
-</script>
+            const id = gumb.dataset.id;
+            const akcija = gumb.dataset.akcija;
+
+
+            // PREGLED PDF-A
+            if (akcija === "pregled") {
+
+                const { data: skripta, error } = await supabase
+                    .from("skripte")
+                    .select("putanja_datoteke")
+                    .eq("id", id)
+                    .single();
+
+                if (error || !skripta) {
+
+                    alert("Ne mogu pronaći PDF datoteku.");
+
+                    return;
+
+                }
+
+                const { data, error: storageError } = await supabase
+                    .storage
+                    .from("skripte")
+                    .createSignedUrl(skripta.putanja_datoteke, 60);
+
+                if (storageError || !data?.signedUrl) {
+
+                    alert("Ne mogu otvoriti PDF. Provjeri Storage pravila.");
+
+                    return;
+
+                }
+
+                window.open(data.signedUrl, "_blank");
+
+                return;
+
+            }
+
+
+            // ODOBRAVANJE I ODBIJANJE
+            if (akcija === "odobri" || akcija === "odbij") {
+
+                const noviStatus =
+                    akcija === "odobri" ? "approved" : "rejected";
+
+                const potvrda = confirm(
+                    akcija === "odobri"
+                        ? "Želiš li odobriti ovu skriptu?"
+                        : "Želiš li odbiti ovu skriptu?"
+                );
+
+                if (!potvrda) return;
+
+                gumb.disabled = true;
+
+                const { error } = await supabase
+                    .from("skripte")
+                    .update({ status: noviStatus })
+                    .eq("id", id)
+                    .eq("status", "pending");
+
+                if (error) {
+
+                    console.error(error);
+
+                    alert(
+                        "Došlo je do greške. Provjeri administratorska RLS pravila."
+                    );
+
+                    gumb.disabled = false;
+
+                    return;
+
+                }
+
+                alert(
+                    akcija === "odobri"
+                        ? "Skripta je uspješno odobrena!"
+                        : "Skripta je odbijena."
+                );
+
+                ucitajSkripte();
+
+            }
+
+        });
+
+
+        // ODJAVA
+        const gumbOdjava = document.getElementById("odjava");
+
+        if (gumbOdjava) {
+
+            gumbOdjava.addEventListener("click", async function(event) {
+
+                event.preventDefault();
+
+                await supabase.auth.signOut();
+
+                window.location.href = "prijava.html";
+
+            });
+
+        }
+
+
+        // POKRETANJE ADMIN PANELA
+        provjeriAdmina();
+
+    </script>
 
 </body>
 </html>
